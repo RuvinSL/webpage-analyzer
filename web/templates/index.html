@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Page Analyzer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            color: #34495e;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="url"] {
+            flex: 1;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="url"]:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        button {
+            padding: 15px 30px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button:hover:not(:disabled) {
+            background: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        button:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: #c33;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .error-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .results {
+            display: none;
+            margin-top: 40px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .result-section h2 {
+            color: #2c3e50;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .result-item {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+        }
+
+        .result-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .badge-warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-danger {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-info {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .heading-list {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .heading-item {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+            font-size: 0.9rem;
+        }
+
+        .heading-level {
+            font-weight: 600;
+            color: #3498db;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Web Page Analyzer</h1>
+        <p class="subtitle">Analyze any webpage to get insights about its structure and content</p>
+        
+        <div class="form-group">
+            <label for="url">Enter URL to analyze:</label>
+            <div class="input-wrapper">
+                <input 
+                    type="url" 
+                    id="url" 
+                    name="url" 
+                    placeholder="https://example.com" 
+                    required
+                    pattern="https?://.*"
+                >
+                <button type="button" id="analyzeBtn" onclick="analyzeURL()">
+                    <span>Analyze</span>
+                    <div class="loader" id="loader"></div>
+                </button>
+            </div>
+        </div>
+
+        <div class="error" id="error">
+            <div class="error-title">Error</div>
+            <div id="errorMessage"></div>
+        </div>
+
+        <div class="results" id="results">
+            <!-- HTML Version -->
+            <div class="result-section">
+                <h2>
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                    </svg>
+                    Document Information
+                </h2>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="result-label">HTML Version</div>
+                        <div class="result-value" id="htmlVersion">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Page Title</div>
+                        <div class="result-value" id="pageTitle" style="font-size: 1rem;">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Login Form</div>
+                        <div class="result-value" id="loginForm">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Headings -->
+            <div class="result-section">
+                <h2>
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
+                    </svg>
+                    Headings Structure
+                </h2>
+                <div class="heading-list" id="headingsList">
+                    <!-- Headings will be populated here -->
+                </div>
+            </div>
+
+            <!-- Links -->
+            <div class="result-section">
+                <h2>
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                    </svg>
+                    Links Analysis
+                </h2>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <div class="result-label">Total Links</div>
+                        <div class="result-value" id="totalLinks">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Internal</div>
+                        <div class="result-value" id="internalLinks">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">External</div>
+                        <div class="result-value" id="externalLinks">-</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Inaccessible</div>
+                        <div class="result-value" id="inaccessibleLinks">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Built with Go • Microservices Architecture • SOLID Principles</p>
+        </div>
+    </div>
+
+    <script>
+        async function analyzeURL() {
+            const urlInput = document.getElementById('url');
+            const url = urlInput.value.trim();
+            
+            if (!url) {
+                showError('Please enter a valid URL');
+                return;
+            }
+
+            // URL validation
+            try {
+                new URL(url);
+            } catch (e) {
+                showError('Please enter a valid URL starting with http:// or https://');
+                return;
+            }
+
+            // UI state
+            const btn = document.getElementById('analyzeBtn');
+            const loader = document.getElementById('loader');
+            const results = document.getElementById('results');
+            const error = document.getElementById('error');
+            
+            btn.disabled = true;
+            loader.style.display = 'block';
+            results.style.display = 'none';
+            error.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/v1/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: url })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Analysis failed');
+                }
+
+                displayResults(data);
+            } catch (err) {
+                showError(err.message || 'Failed to analyze URL. Please try again.');
+            } finally {
+                btn.disabled = false;
+                loader.style.display = 'none';
+            }
+        }
+
+        function displayResults(data) {
+            document.getElementById('results').style.display = 'block';
+            
+            // Document info
+            document.getElementById('htmlVersion').textContent = data.html_version || 'Unknown';
+            document.getElementById('pageTitle').textContent = data.title || 'No title';
+            document.getElementById('loginForm').innerHTML = data.has_login_form 
+                ? '<span class="badge badge-success">Found</span>' 
+                : '<span class="badge badge-info">Not Found</span>';
+
+            // Headings
+            const headingsList = document.getElementById('headingsList');
+            headingsList.innerHTML = '';
+            
+            for (let level = 1; level <= 6; level++) {
+                const count = data.headings[`h${level}`] || 0;
+                if (count > 0) {
+                    const item = document.createElement('div');
+                    item.className = 'heading-item';
+                    item.innerHTML = `<span class="heading-level">H${level}</span>: ${count}`;
+                    headingsList.appendChild(item);
+                }
+            }
+
+            if (headingsList.children.length === 0) {
+                headingsList.innerHTML = '<span style="color: #7f8c8d;">No headings found</span>';
+            }
+
+            // Links
+            document.getElementById('totalLinks').textContent = data.links.total || 0;
+            document.getElementById('internalLinks').textContent = data.links.internal || 0;
+            document.getElementById('externalLinks').textContent = data.links.external || 0;
+            document.getElementById('inaccessibleLinks').textContent = data.links.inaccessible || 0;
+        }
+
+        function showError(message) {
+            const error = document.getElementById('error');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            errorMessage.textContent = message;
+            error.style.display = 'block';
+        }
+
+        // Enter key support
+        document.getElementById('url').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                analyzeURL();
+            }
+        });
+    </script>
+</body>
+</html>

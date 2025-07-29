@@ -1,0 +1,49 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'webpage-analyzer'
+
+scrape_configs:
+  # Gateway service metrics
+  - job_name: 'gateway'
+    static_configs:
+      - targets: ['gateway:8080']
+        labels:
+          service: 'gateway'
+          environment: 'production'
+    metrics_path: '/metrics'
+
+  # Analyzer service metrics
+  - job_name: 'analyzer'
+    static_configs:
+      - targets: ['analyzer:8081']
+        labels:
+          service: 'analyzer'
+          environment: 'production'
+    metrics_path: '/metrics'
+
+  # Link checker service metrics
+  - job_name: 'link-checker'
+    static_configs:
+      - targets: ['link-checker:8082']
+        labels:
+          service: 'link-checker'
+          environment: 'production'
+    metrics_path: '/metrics'
+
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+# Alerting rules (optional)
+rule_files:
+  # - '/etc/prometheus/alerts/*.yml'
+
+# Alertmanager configuration (optional)
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets: []
+          # - 'alertmanager:9093'

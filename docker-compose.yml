@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  gateway:
+    build:
+      context: .
+      dockerfile: services/gateway/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ANALYZER_SERVICE_URL=http://analyzer:8081
+      - LINK_CHECKER_SERVICE_URL=http://link-checker:8082
+      - LOG_LEVEL=info
+    depends_on:
+      - analyzer
+      - link-checker
+    networks:
+      - analyzer-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  analyzer:
+    build:
+      context: .
+      dockerfile: services/analyzer/Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - LOG_LEVEL=info
+      - LINK_CHECKER_SERVICE_URL=http://link-checker:8082
+    depends_on:
+      - link-checker
+    networks:
+      - analyzer-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8081/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  link-checker:
+    build:
+      context: .
+      dockerfile: services/link-checker/Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - LOG_LEVEL=info
+      - WORKER_POOL_SIZE=10
+      - CHECK_TIMEOUT=5s
+    networks:
+      - analyzer-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8082/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - analyzer-network
+    restart: unless-stopped
+
+networks:
+  analyzer-network:
+    driver: bridge
+
+volumes:
+  prometheus-data:
