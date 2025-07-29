@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/RuvinSL/webpage-analyzer/pkg/interfaces"
 	"github.com/gorilla/mux"
-	"github.com/yourusername/webpage-analyzer/pkg/interfaces"
 )
 
 // RequestID middleware adds a unique request ID to the context

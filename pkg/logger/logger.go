@@ -7,7 +7,7 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/yourusername/webpage-analyzer/pkg/interfaces"
+	"github.com/RuvinSL/webpage-analyzer/pkg/interfaces"
 )
 
 // Logger wraps slog.Logger to implement our interface

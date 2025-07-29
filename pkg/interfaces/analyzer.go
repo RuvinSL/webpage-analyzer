@@ -3,7 +3,7 @@ package interfaces
 import (
 	"context"
 
-	"github.com/yourusername/webpage-analyzer/pkg/models"
+	"github.com/RuvinSL/webpage-analyzer/pkg/models"
 )
 
 // Analyzer defines the contract for web page analysis

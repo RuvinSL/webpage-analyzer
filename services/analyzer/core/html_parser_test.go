@@ -2,13 +2,15 @@ package core
 
 import (
 	"context"
+	"strings"
 	"testing"
 
+	"github.com/RuvinSL/webpage-analyzer/pkg/mocks"
+	"github.com/RuvinSL/webpage-analyzer/pkg/models"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/yourusername/webpage-analyzer/pkg/mocks"
-	"github.com/yourusername/webpage-analyzer/pkg/models"
+	"golang.org/x/net/html"
 )
 
 func TestHTMLParser_DetectHTMLVersion(t *testing.T) {

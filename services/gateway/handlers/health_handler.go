@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/yourusername/webpage-analyzer/pkg/models"
+	"github.com/RuvinSL/webpage-analyzer/pkg/models"
 )
 
 // HealthHandler handles health check requests

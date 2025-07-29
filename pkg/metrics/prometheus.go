@@ -1,8 +1,8 @@
 package metrics
 
 import (
+	"github.com/RuvinSL/webpage-analyzer/pkg/interfaces"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/yourusername/webpage-analyzer/pkg/interfaces"
 )
 
 // PrometheusCollector implements metrics collection using Prometheus

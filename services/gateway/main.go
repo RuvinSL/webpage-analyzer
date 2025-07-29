@@ -12,13 +12,13 @@ import (
 
 	"net/http/pprof"
 
+	"github.com/RuvinSL/webpage-analyzer/pkg/logger"
+	"github.com/RuvinSL/webpage-analyzer/pkg/metrics"
+	"github.com/RuvinSL/webpage-analyzer/services/gateway/handlers"
+	"github.com/RuvinSL/webpage-analyzer/services/gateway/middleware"
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/yourusername/webpage-analyzer/pkg/logger"
-	"github.com/yourusername/webpage-analyzer/pkg/metrics"
-	"github.com/yourusername/webpage-analyzer/services/gateway/handlers"
-	"github.com/yourusername/webpage-analyzer/services/gateway/middleware"
 )
 
 const (

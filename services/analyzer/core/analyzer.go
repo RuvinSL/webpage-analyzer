@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/yourusername/webpage-analyzer/pkg/interfaces"
-	"github.com/yourusername/webpage-analyzer/pkg/models"
+	"github.com/RuvinSL/webpage-analyzer/pkg/interfaces"
+	"github.com/RuvinSL/webpage-analyzer/pkg/models"
 )
 
 // Analyzer implements the web page analysis logic

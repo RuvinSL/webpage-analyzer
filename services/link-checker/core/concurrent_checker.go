@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/yourusername/webpage-analyzer/pkg/interfaces"
-	"github.com/yourusername/webpage-analyzer/pkg/models"
+	"github.com/RuvinSL/webpage-analyzer/pkg/interfaces"
+	"github.com/RuvinSL/webpage-analyzer/pkg/models"
 )
 
 // ConcurrentLinkChecker implements concurrent link checking with worker pool
