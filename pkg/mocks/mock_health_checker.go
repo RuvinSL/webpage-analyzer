@@ -13,31 +13,31 @@ import (
 	gomock "github.com/golang/mock/gomock"
 )
 
-// MockAnalyzer is a mock of Analyzer interface.
-type MockAnalyzer struct {
+// MockHeAnalyzer is a mock of Analyzer interface.
+type MockHeAnalyzer struct {
 	ctrl     *gomock.Controller
-	recorder *MockAnalyzerMockRecorder
+	recorder *MockHeAnalyzerMockRecorder
 }
 
-// MockAnalyzerMockRecorder is the mock recorder for MockAnalyzer.
-type MockAnalyzerMockRecorder struct {
-	mock *MockAnalyzer
+// MockHeAnalyzerMockRecorder is the mock recorder for MockHeAnalyzer.
+type MockHeAnalyzerMockRecorder struct {
+	mock *MockHeAnalyzer
 }
 
-// NewMockAnalyzer creates a new mock instance.
-func NewMockAnalyzer(ctrl *gomock.Controller) *MockAnalyzer {
-	mock := &MockAnalyzer{ctrl: ctrl}
-	mock.recorder = &MockAnalyzerMockRecorder{mock}
+// NewHeMockAnalyzer creates a new mock instance.
+func NewHeMockAnalyzer(ctrl *gomock.Controller) *MockHeAnalyzer {
+	mock := &MockHeAnalyzer{ctrl: ctrl}
+	mock.recorder = &MockHeAnalyzerMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockAnalyzer) EXPECT() *MockAnalyzerMockRecorder {
+func (m *MockHeAnalyzer) EXPECT() *MockHeAnalyzerMockRecorder {
 	return m.recorder
 }
 
 // AnalyzeURL mocks base method.
-func (m *MockAnalyzer) AnalyzeURL(ctx context.Context, url string) (*models.AnalysisResult, error) {
+func (m *MockHeAnalyzer) AnalyzeURL(ctx context.Context, url string) (*models.AnalysisResult, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AnalyzeURL", ctx, url)
 	ret0, _ := ret[0].(*models.AnalysisResult)
@@ -46,36 +46,36 @@ func (m *MockAnalyzer) AnalyzeURL(ctx context.Context, url string) (*models.Anal
 }
 
 // AnalyzeURL indicates an expected call of AnalyzeURL.
-func (mr *MockAnalyzerMockRecorder) AnalyzeURL(ctx, url interface{}) *gomock.Call {
+func (mr *MockHeAnalyzerMockRecorder) AnalyzeURL(ctx, url interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AnalyzeURL", reflect.TypeOf((*MockAnalyzer)(nil).AnalyzeURL), ctx, url)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AnalyzeURL", reflect.TypeOf((*MockHeAnalyzer)(nil).AnalyzeURL), ctx, url)
 }
 
-// MockHTMLParser is a mock of HTMLParser interface.
-type MockHTMLParser struct {
+// MockHeHTMLParser is a mock of HTMLParser interface.
+type MockHeHTMLParser struct {
 	ctrl     *gomock.Controller
-	recorder *MockHTMLParserMockRecorder
+	recorder *MockHeHTMLParserMockRecorder
 }
 
-// MockHTMLParserMockRecorder is the mock recorder for MockHTMLParser.
-type MockHTMLParserMockRecorder struct {
-	mock *MockHTMLParser
+// MockHeHTMLParserMockRecorder is the mock recorder for MockHeHTMLParser.
+type MockHeHTMLParserMockRecorder struct {
+	mock *MockHeHTMLParser
 }
 
-// NewMockHTMLParser creates a new mock instance.
-func NewMockHTMLParser(ctrl *gomock.Controller) *MockHTMLParser {
-	mock := &MockHTMLParser{ctrl: ctrl}
-	mock.recorder = &MockHTMLParserMockRecorder{mock}
+// NewHeMockHTMLParser creates a new mock instance.
+func NewHeMockHTMLParser(ctrl *gomock.Controller) *MockHeHTMLParser {
+	mock := &MockHeHTMLParser{ctrl: ctrl}
+	mock.recorder = &MockHeHTMLParserMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockHTMLParser) EXPECT() *MockHTMLParserMockRecorder {
+func (m *MockHeHTMLParser) EXPECT() *MockHeHTMLParserMockRecorder {
 	return m.recorder
 }
 
 // DetectHTMLVersion mocks base method.
-func (m *MockHTMLParser) DetectHTMLVersion(content []byte) string {
+func (m *MockHeHTMLParser) DetectHTMLVersion(content []byte) string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DetectHTMLVersion", content)
 	ret0, _ := ret[0].(string)
@@ -83,13 +83,13 @@ func (m *MockHTMLParser) DetectHTMLVersion(content []byte) string {
 }
 
 // DetectHTMLVersion indicates an expected call of DetectHTMLVersion.
-func (mr *MockHTMLParserMockRecorder) DetectHTMLVersion(content interface{}) *gomock.Call {
+func (mr *MockHeHTMLParserMockRecorder) DetectHTMLVersion(content interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DetectHTMLVersion", reflect.TypeOf((*MockHTMLParser)(nil).DetectHTMLVersion), content)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DetectHTMLVersion", reflect.TypeOf((*MockHeHTMLParser)(nil).DetectHTMLVersion), content)
 }
 
 // ExtractTitle mocks base method.
-func (m *MockHTMLParser) ExtractTitle(content []byte) string {
+func (m *MockHeHTMLParser) ExtractTitle(content []byte) string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ExtractTitle", content)
 	ret0, _ := ret[0].(string)
@@ -97,13 +97,13 @@ func (m *MockHTMLParser) ExtractTitle(content []byte) string {
 }
 
 // ExtractTitle indicates an expected call of ExtractTitle.
-func (mr *MockHTMLParserMockRecorder) ExtractTitle(content interface{}) *gomock.Call {
+func (mr *MockHeHTMLParserMockRecorder) ExtractTitle(content interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExtractTitle", reflect.TypeOf((*MockHTMLParser)(nil).ExtractTitle), content)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ExtractTitle", reflect.TypeOf((*MockHeHTMLParser)(nil).ExtractTitle), content)
 }
 
 // ParseHTML mocks base method.
-func (m *MockHTMLParser) ParseHTML(ctx context.Context, content []byte, baseURL string) (*models.ParsedHTML, error) {
+func (m *MockHeHTMLParser) ParseHTML(ctx context.Context, content []byte, baseURL string) (*models.ParsedHTML, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ParseHTML", ctx, content, baseURL)
 	ret0, _ := ret[0].(*models.ParsedHTML)
@@ -112,36 +112,36 @@ func (m *MockHTMLParser) ParseHTML(ctx context.Context, content []byte, baseURL 
 }
 
 // ParseHTML indicates an expected call of ParseHTML.
-func (mr *MockHTMLParserMockRecorder) ParseHTML(ctx, content, baseURL interface{}) *gomock.Call {
+func (mr *MockHeHTMLParserMockRecorder) ParseHTML(ctx, content, baseURL interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ParseHTML", reflect.TypeOf((*MockHTMLParser)(nil).ParseHTML), ctx, content, baseURL)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ParseHTML", reflect.TypeOf((*MockHeHTMLParser)(nil).ParseHTML), ctx, content, baseURL)
 }
 
-// MockLinkChecker is a mock of LinkChecker interface.
-type MockLinkChecker struct {
+// MockHeLinkChecker is a mock of LinkChecker interface.
+type MockHeLinkChecker struct {
 	ctrl     *gomock.Controller
-	recorder *MockLinkCheckerMockRecorder
+	recorder *MockHeLinkCheckerMockRecorder
 }
 
-// MockLinkCheckerMockRecorder is the mock recorder for MockLinkChecker.
-type MockLinkCheckerMockRecorder struct {
-	mock *MockLinkChecker
+// MockHeLinkCheckerMockRecorder is the mock recorder for MockHeLinkChecker.
+type MockHeLinkCheckerMockRecorder struct {
+	mock *MockHeLinkChecker
 }
 
-// NewMockLinkChecker creates a new mock instance.
-func NewMockLinkChecker(ctrl *gomock.Controller) *MockLinkChecker {
-	mock := &MockLinkChecker{ctrl: ctrl}
-	mock.recorder = &MockLinkCheckerMockRecorder{mock}
+// NewHeMockLinkChecker creates a new mock instance.
+func NewHeMockLinkChecker(ctrl *gomock.Controller) *MockHeLinkChecker {
+	mock := &MockHeLinkChecker{ctrl: ctrl}
+	mock.recorder = &MockHeLinkCheckerMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockLinkChecker) EXPECT() *MockLinkCheckerMockRecorder {
+func (m *MockHeLinkChecker) EXPECT() *MockHeLinkCheckerMockRecorder {
 	return m.recorder
 }
 
 // CheckLink mocks base method.
-func (m *MockLinkChecker) CheckLink(ctx context.Context, link models.Link) models.LinkStatus {
+func (m *MockHeLinkChecker) CheckLink(ctx context.Context, link models.Link) models.LinkStatus {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CheckLink", ctx, link)
 	ret0, _ := ret[0].(models.LinkStatus)
@@ -149,13 +149,13 @@ func (m *MockLinkChecker) CheckLink(ctx context.Context, link models.Link) model
 }
 
 // CheckLink indicates an expected call of CheckLink.
-func (mr *MockLinkCheckerMockRecorder) CheckLink(ctx, link interface{}) *gomock.Call {
+func (mr *MockHeLinkCheckerMockRecorder) CheckLink(ctx, link interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckLink", reflect.TypeOf((*MockLinkChecker)(nil).CheckLink), ctx, link)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckLink", reflect.TypeOf((*MockHeLinkChecker)(nil).CheckLink), ctx, link)
 }
 
 // CheckLinks mocks base method.
-func (m *MockLinkChecker) CheckLinks(ctx context.Context, links []models.Link) ([]models.LinkStatus, error) {
+func (m *MockHeLinkChecker) CheckLinks(ctx context.Context, links []models.Link) ([]models.LinkStatus, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CheckLinks", ctx, links)
 	ret0, _ := ret[0].([]models.LinkStatus)
@@ -164,9 +164,9 @@ func (m *MockLinkChecker) CheckLinks(ctx context.Context, links []models.Link) (
 }
 
 // CheckLinks indicates an expected call of CheckLinks.
-func (mr *MockLinkCheckerMockRecorder) CheckLinks(ctx, links interface{}) *gomock.Call {
+func (mr *MockHeLinkCheckerMockRecorder) CheckLinks(ctx, links interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckLinks", reflect.TypeOf((*MockLinkChecker)(nil).CheckLinks), ctx, links)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CheckLinks", reflect.TypeOf((*MockHeLinkChecker)(nil).CheckLinks), ctx, links)
 }
 
 // MockHTTPClient is a mock of HTTPClient interface.
