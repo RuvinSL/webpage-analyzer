@@ -3,7 +3,6 @@ package middleware
 import (
 	"context"
 	"fmt"
-	"log/slog"
 	"net/http"
 	"time"
 
@@ -33,7 +32,7 @@ func RequestID(next http.Handler) http.Handler {
 }
 
 // Logging middleware logs all HTTP requests
-func Logging(logger *slog.Logger) mux.MiddlewareFunc {
+func Logging(logger interfaces.Logger) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			start := time.Now()
@@ -98,7 +97,7 @@ func Metrics(collector interfaces.MetricsCollector) mux.MiddlewareFunc {
 }
 
 // Recovery middleware recovers from panics
-func Recovery(logger *slog.Logger) mux.MiddlewareFunc {
+func Recovery(logger interfaces.Logger) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			defer func() {

@@ -2,19 +2,20 @@ package handlers
 
 import (
 	"html/template"
-	"log/slog"
 	"net/http"
 	"path/filepath"
+
+	"github.com/RuvinSL/webpage-analyzer/pkg/interfaces"
 )
 
 // WebHandler handles web UI requests
 type WebHandler struct {
-	logger    *slog.Logger
+	logger    interfaces.Logger
 	templates *template.Template
 }
 
 // NewWebHandler creates a new web handler
-func NewWebHandler(logger *slog.Logger) *WebHandler {
+func NewWebHandler(logger interfaces.Logger) *WebHandler {
 	// In production, you would parse templates once at startup
 	// For simplicity, we'll serve the HTML directly
 	return &WebHandler{

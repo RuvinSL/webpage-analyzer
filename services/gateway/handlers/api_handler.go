@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"log/slog"
 	"net/http"
 	"time"
 
@@ -13,12 +12,12 @@ import (
 // APIHandler handles API requests
 type APIHandler struct {
 	analyzerClient AnalyzerClient
-	logger         *slog.Logger
+	logger         interfaces.Logger
 	metrics        interfaces.MetricsCollector
 }
 
 // NewAPIHandler creates a new API handler
-func NewAPIHandler(analyzerClient AnalyzerClient, logger *slog.Logger, metrics interfaces.MetricsCollector) *APIHandler {
+func NewAPIHandler(analyzerClient AnalyzerClient, logger interfaces.Logger, metrics interfaces.MetricsCollector) *APIHandler {
 	return &APIHandler{
 		analyzerClient: analyzerClient,
 		logger:         logger,

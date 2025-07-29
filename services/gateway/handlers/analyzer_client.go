@@ -5,10 +5,10 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"log/slog"
 	"net/http"
 	"time"
 
+	"github.com/RuvinSL/webpage-analyzer/pkg/interfaces"
 	"github.com/RuvinSL/webpage-analyzer/pkg/models"
 )
 
@@ -22,11 +22,11 @@ type AnalyzerClient interface {
 type HTTPAnalyzerClient struct {
 	baseURL    string
 	httpClient *http.Client
-	logger     *slog.Logger
+	logger     interfaces.Logger
 }
 
 // NewAnalyzerClient creates a new analyzer client
-func NewAnalyzerClient(baseURL string, timeout time.Duration, logger *slog.Logger) AnalyzerClient {
+func NewAnalyzerClient(baseURL string, timeout time.Duration, logger interfaces.Logger) AnalyzerClient {
 	return &HTTPAnalyzerClient{
 		baseURL: baseURL,
 		httpClient: &http.Client{
