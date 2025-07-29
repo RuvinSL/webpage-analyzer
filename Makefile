@@ -47,7 +47,7 @@ clean:
 
 clean-modules:
 	@echo "Cleaning and regenerating go.sum..."
-	@rm -f go.sum
+	@del /f go.sum 2>NUL || true
 	@go mod download
 	@go mod tidy
 	@echo "✓ go.sum regenerated"
@@ -84,7 +84,9 @@ docker-compose-down:
 	@docker-compose down
 
 generate-mocks:
-	@echo "Generating mocks..."
+	@echo "Generating mocks..." 
+	@if not exist pkg\mocks mkdir pkg\mocks 
+	@del /f pkg\mocks\*.go 2>NUL || true
 	@go generate ./...
 
 lint:

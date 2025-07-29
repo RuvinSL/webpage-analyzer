@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -109,7 +110,7 @@ func TestIntegration_CompleteAnalysisFlow(t *testing.T) {
 // startLinkCheckerService starts the link checker service for testing
 func startLinkCheckerService(t *testing.T) string {
 	// Initialize components
-	log := logger.New("link-checker-test", logger.LevelInfo)
+	log := logger.New("link-checker-test", slog.LevelInfo)
 	metricsCollector := metrics.NewPrometheusCollector("link-checker-test")
 	httpClient := httpclient.New(5*time.Second, log)
 
@@ -140,7 +141,7 @@ func startLinkCheckerService(t *testing.T) string {
 // startAnalyzerService starts the analyzer service for testing
 func startAnalyzerService(t *testing.T, linkCheckerURL string) string {
 	// Initialize components
-	log := logger.New("analyzer-test", logger.LevelInfo)
+	log := logger.New("analyzer-test", slog.LevelInfo)
 	metricsCollector := metrics.NewPrometheusCollector("analyzer-test")
 	httpClient := httpclient.New(10*time.Second, log)
 	htmlParser := core.NewHTMLParser(log)
@@ -168,7 +169,7 @@ func startAnalyzerService(t *testing.T, linkCheckerURL string) string {
 // startGatewayService starts the gateway service for testing
 func startGatewayService(t *testing.T, analyzerURL string) string {
 	// Initialize components
-	log := logger.New("gateway-test", logger.LevelInfo)
+	log := logger.New("gateway-test", slog.LevelInfo)
 	metricsCollector := metrics.NewPrometheusCollector("gateway-test")
 	analyzerClient := handlers.NewAnalyzerClient(analyzerURL, 30*time.Second, log)
 

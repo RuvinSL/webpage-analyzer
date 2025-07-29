@@ -84,7 +84,7 @@ func (c *HTTPAnalyzerClient) Analyze(ctx context.Context, url string) (*models.A
 		if err := json.NewDecoder(resp.Body).Decode(&errorResp); err != nil {
 			return nil, fmt.Errorf("analyzer service returned status %d", resp.StatusCode)
 		}
-		return nil, fmt.Errorf(errorResp.Error)
+		return nil, fmt.Errorf("%v", errorResp.Error)
 	}
 
 	// Parse response
