@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"log/slog"
 	"net/http"
 	"time"
 
@@ -13,11 +12,11 @@ import (
 // LinkHandler handles link checking requests
 type LinkHandler struct {
 	linkChecker interfaces.LinkChecker
-	logger      *slog.Logger
+	logger      interfaces.Logger
 }
 
 // NewLinkHandler creates a new link handler
-func NewLinkHandler(linkChecker interfaces.LinkChecker, logger *slog.Logger) *LinkHandler {
+func NewLinkHandler(linkChecker interfaces.LinkChecker, logger interfaces.Logger) *LinkHandler {
 	return &LinkHandler{
 		linkChecker: linkChecker,
 		logger:      logger,

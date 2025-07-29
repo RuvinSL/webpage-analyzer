@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"time"
 
-	"log/slog"
-
 	"github.com/RuvinSL/webpage-analyzer/pkg/interfaces"
 	"github.com/RuvinSL/webpage-analyzer/pkg/models"
 )
@@ -16,12 +14,13 @@ import (
 // Client implements the HTTPClient interface
 type Client struct {
 	client  *http.Client
-	logger  *slog.Logger
+	logger  interfaces.Logger //*slog.Logger
 	timeout time.Duration
 }
 
 // New creates a new HTTP client with timeout
-func New(timeout time.Duration, logger *slog.Logger) *Client {
+// func New(timeout time.Duration, logger *slog.Logger) *Client {
+func New(timeout time.Duration, logger interfaces.Logger) *Client {
 	return &Client{
 		client: &http.Client{
 			Timeout: timeout,

@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/RuvinSL/webpage-analyzer/pkg/httpclient"
+	"github.com/RuvinSL/webpage-analyzer/pkg/interfaces"
 	"github.com/RuvinSL/webpage-analyzer/pkg/logger"
 	"github.com/RuvinSL/webpage-analyzer/pkg/metrics"
 	"github.com/RuvinSL/webpage-analyzer/services/link-checker/core"
@@ -122,7 +123,7 @@ func main() {
 	log.Info("Server exited")
 }
 
-func loggingMiddleware(log *slog.Logger) mux.MiddlewareFunc {
+func loggingMiddleware(log interfaces.Logger) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			start := time.Now()
@@ -155,7 +156,7 @@ func metricsMiddleware(collector metrics.Collector) mux.MiddlewareFunc {
 	}
 }
 
-func recoveryMiddleware(log *slog.Logger) mux.MiddlewareFunc {
+func recoveryMiddleware(log interfaces.Logger) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			defer func() {

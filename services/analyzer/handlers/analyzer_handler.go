@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"log/slog"
 	"net/http"
 	"time"
 
@@ -13,11 +12,12 @@ import (
 // AnalyzerHandler handles analyzer service requests
 type AnalyzerHandler struct {
 	analyzer interfaces.Analyzer
-	logger   *slog.Logger
+	logger   interfaces.Logger // *slog.Logger
 }
 
 // NewAnalyzerHandler creates a new analyzer handler
-func NewAnalyzerHandler(analyzer interfaces.Analyzer, logger *slog.Logger) *AnalyzerHandler {
+// func NewAnalyzerHandler(analyzer interfaces.Analyzer, logger *slog.Logger) *AnalyzerHandler {
+func NewAnalyzerHandler(analyzer interfaces.Analyzer, logger interfaces.Logger) *AnalyzerHandler {
 	return &AnalyzerHandler{
 		analyzer: analyzer,
 		logger:   logger,
