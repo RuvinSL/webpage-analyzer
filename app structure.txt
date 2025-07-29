@@ -1,0 +1,82 @@
+webpage-analyzer/
+├── .github/
+│   └── workflows/
+│       └── ci-cd.yml                    # GitHub Actions CI/CD pipeline
+│
+├── services/                            # Microservices
+│   ├── gateway/                         # API Gateway Service
+│   │   ├── main.go                      # Service entry point
+│   │   ├── Dockerfile                   # Docker configuration
+│   │   ├── handlers/
+│   │   │   ├── api_handler.go          # API request handlers
+│   │   │   ├── analyzer_client.go      # Analyzer service client
+│   │   │   ├── web_handler.go          # Web UI handler
+│   │   │   └── health_handler.go       # Health check handler
+│   │   └── middleware/
+│   │       └── middleware.go            # HTTP middleware (logging, metrics, etc.)
+│   │
+│   ├── analyzer/                        # Analyzer Service
+│   │   ├── main.go                      # Service entry point
+│   │   ├── Dockerfile                   # Docker configuration
+│   │   ├── core/
+│   │   │   ├── analyzer.go             # Core analysis logic
+│   │   │   ├── analyzer_test.go        # Unit tests
+│   │   │   ├── html_parser.go          # HTML parsing implementation
+│   │   │   ├── html_parser_test.go     # Parser tests
+│   │   │   └── link_checker_client.go  # Link checker service client
+│   │   └── handlers/
+│   │       ├── analyzer_handler.go      # Analyzer request handler
+│   │       └── health_handler.go        # Health check handler
+│   │
+│   └── link-checker/                    # Link Checker Service
+│       ├── main.go                      # Service entry point
+│       ├── Dockerfile                   # Docker configuration
+│       ├── core/
+│       │   └── concurrent_checker.go    # Concurrent link checking with worker pool
+│       └── handlers/
+│           ├── link_handler.go          # Link check request handler
+│           └── health_handler.go        # Health check handler
+│
+├── pkg/                                 # Shared packages
+│   ├── interfaces/
+│   │   ├── analyzer.go                  # Core interfaces (SOLID principles)
+│   │   └── generate.go                  # Mock generation directives
+│   ├── models/
+│   │   └── models.go                    # Shared data models
+│   ├── httpclient/
+│   │   └── client.go                    # HTTP client implementation
+│   ├── logger/
+│   │   └── logger.go                    # Structured logging (slog)
+│   ├── metrics/
+│   │   └── prometheus.go                # Prometheus metrics collector
+│   └── mocks/                          # Generated mocks (gitignored)
+│
+├── web/                                 # Web UI assets
+│   ├── templates/
+│   │   └── index.html                   # Main web interface
+│   └── static/                          # Static assets (CSS, JS, images)
+│
+├── tests/                               # Integration tests
+│   └── integration/
+│       └── api_integration_test.go      # End-to-end integration tests
+│
+├── scripts/                             # Utility scripts
+│   └── setup-ec2.sh                     # AWS EC2 setup script
+│
+├── monitoring/                          # Monitoring configuration
+│   └── prometheus.yml                   # Prometheus configuration
+│
+├── docs/                                # Documentation
+│   ├── images/                          # Screenshots and diagrams
+│   └── api/                            # API documentation
+│
+├── docker-compose.yml                   # Multi-service Docker configuration
+├── Makefile                            # Build and deployment commands
+├── go.mod                              # Go module definition
+├── go.sum                              # Go dependencies lock file
+├── .gitignore                          # Git ignore rules
+├── .env.example                        # Environment variables template
+├── README.md                           # Project documentation
+├── TESTING.md                          # Testing guide
+├── QUICKSTART.md                       # Quick start guide
+└── PROJECT_STRUCTURE.md                # This file
