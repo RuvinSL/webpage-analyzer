@@ -87,7 +87,7 @@ func (c *LinkCheckerClient) CheckLinks(ctx context.Context, links []models.Link)
 		if err := json.NewDecoder(resp.Body).Decode(&errorResp); err != nil {
 			return nil, fmt.Errorf("link checker service returned status %d", resp.StatusCode)
 		}
-		return nil, fmt.Errorf(errorResp.Error)
+		return nil, fmt.Errorf("something went wrong: %s", errorResp.Error)
 	}
 
 	// Parse response
