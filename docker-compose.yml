@@ -42,10 +42,10 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-    volumes:
-      - ./:/app  # Mount current directory to /app in container
-    working_dir: /app
-    command: sh -c "go run main.go"  
+    # volumes:
+    #   - ./:/app  # Mount current directory to /app in container
+    # working_dir: /app
+    # command: sh -c "go run main.go"  
 
   link-checker:
     build:
