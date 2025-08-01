@@ -12,20 +12,17 @@ import (
 	"github.com/RuvinSL/webpage-analyzer/pkg/models"
 )
 
-// AnalyzerClient interface for analyzer service communication
 type AnalyzerClient interface {
 	Analyze(ctx context.Context, url string) (*models.AnalysisResult, error)
 	CheckHealth(ctx context.Context) error
 }
 
-// HTTPAnalyzerClient implements AnalyzerClient using HTTP
 type HTTPAnalyzerClient struct {
 	baseURL    string
 	httpClient *http.Client
 	logger     interfaces.Logger
 }
 
-// NewAnalyzerClient creates a new analyzer client
 func NewAnalyzerClient(baseURL string, timeout time.Duration, logger interfaces.Logger) AnalyzerClient {
 	return &HTTPAnalyzerClient{
 		baseURL: baseURL,
