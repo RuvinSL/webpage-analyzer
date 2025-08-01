@@ -59,8 +59,17 @@ func (a *Analyzer) AnalyzeURL(ctx context.Context, url string) (*models.Analysis
 	// Step 2: Detect HTML version
 	htmlVersion := a.htmlParser.DetectHTMLVersion(response.Body)
 
+	fmt.Println("LOG: htmlVersion =", htmlVersion)
+
+	fmt.Println("LOG: ctx =", ctx)
+	//fmt.Println("LOG: response.Body =", response.Body)
+	fmt.Println("LOG: url =", url)
+
 	// Step 3: Parse HTML content
 	parsed, err := a.htmlParser.ParseHTML(ctx, response.Body, url)
+
+	fmt.Println("LOG:  HTML content =", parsed)
+
 	if err != nil {
 		a.logger.Error("Failed to parse HTML", "url", url, "error", err)
 		return nil, fmt.Errorf("failed to parse HTML: %w", err)

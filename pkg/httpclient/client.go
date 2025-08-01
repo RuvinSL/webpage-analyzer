@@ -173,6 +173,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"time"
 
@@ -187,23 +188,45 @@ type Client struct {
 	timeout time.Duration
 }
 
-// New creates a new HTTP client with timeout
-// func New(timeout time.Duration, logger *slog.Logger) *Client {
 func New(timeout time.Duration, logger interfaces.Logger) *Client {
 	return &Client{
 		client: &http.Client{
-			Timeout: timeout,
+			Timeout: timeout, // overall request deadline (includes headers + body)
 			Transport: &http.Transport{
-				MaxIdleConns:        100,
-				MaxIdleConnsPerHost: 10,
-				IdleConnTimeout:     30 * time.Second,
-				DisableCompression:  false,
+				DialContext: (&net.Dialer{
+					Timeout:   2 * time.Second,  // TCP connect timeout
+					KeepAlive: 30 * time.Second, // keep-alive
+				}).DialContext,
+				MaxIdleConns:          100,
+				MaxIdleConnsPerHost:   70,
+				IdleConnTimeout:       60 * time.Second,
+				DisableCompression:    false,
+				TLSHandshakeTimeout:   5 * time.Second,
+				ExpectContinueTimeout: 1 * time.Second,
 			},
 		},
 		logger:  logger,
 		timeout: timeout,
 	}
 }
+
+// New creates a new HTTP client with timeout
+// // func New(timeout time.Duration, logger *slog.Logger) *Client {
+// func New(timeout time.Duration, logger interfaces.Logger) *Client {
+// 	return &Client{
+// 		client: &http.Client{
+// 			Timeout: timeout,
+// 			Transport: &http.Transport{
+// 				MaxIdleConns:        100,
+// 				MaxIdleConnsPerHost: 10,
+// 				IdleConnTimeout:     30 * time.Second,
+// 				DisableCompression:  false,
+// 			},
+// 		},
+// 		logger:  logger,
+// 		timeout: timeout,
+// 	}
+// }
 
 // Get performs an HTTP GET request
 func (c *Client) Get(ctx context.Context, url string) (*models.HTTPResponse, error) {

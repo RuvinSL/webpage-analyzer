@@ -28,24 +28,33 @@ func NewHTMLParser(logger interfaces.Logger) *HTMLParser {
 	}
 }
 
-// ParseHTML parses HTML content and extracts relevant information
 func (p *HTMLParser) ParseHTML(ctx context.Context, content []byte, baseURL string) (*models.ParsedHTML, error) {
+	var reader io.Reader = bytes.NewReader(content)
 
-	// preview := string(content)
-	// if len(preview) > 500 {
-	// 	preview = preview[:500]
-	// }
-	// fmt.Println("LOG: htmlStrxxx =", preview)
+	// Detect gzip by magic bytes 0x1f 0x8b
+	if len(content) >= 2 && content[0] == 0x1f && content[1] == 0x8b {
+		gz, err := gzip.NewReader(reader)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create gzip reader: %w", err)
+		}
+		defer gz.Close()
+		reader = gz
+	}
 
-	doc, err := html.Parse(bytes.NewReader(content))
+	// Parse the (possibly decompressed) HTML
+	doc, err := html.Parse(reader)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse HTML: %w", err)
 	}
+
+	// Optional: lightweight logging without dumping entire tree
+	fmt.Println("LOG: parsed HTML root node type:", doc.Type, "data:", doc.Data)
 
 	base, err := url.Parse(baseURL)
 	if err != nil {
 		return nil, fmt.Errorf("invalid base URL: %w", err)
 	}
+	fmt.Println("LOG: base =", base)
 
 	result := &models.ParsedHTML{
 		Headings: make(map[string][]string),
@@ -57,6 +66,51 @@ func (p *HTMLParser) ParseHTML(ctx context.Context, content []byte, baseURL stri
 
 	return result, nil
 }
+
+// ParseHTML parses HTML content and extracts relevant information
+// func (p *HTMLParser) ParseHTML(ctx context.Context, content []byte, baseURL string) (*models.ParsedHTML, error) {
+
+// 	// Convert bytes to string to see the actual text
+// 	// fmt.Println("LOG: htmlStr =", string(content))
+
+// 	// if len(content) > 2 && content[0] == 0x1f && content[1] == 0x8b {
+// 	// 	reader, err := gzip.NewReader(bytes.NewReader(content))
+// 	// 	if err == nil {
+// 	// 		defer reader.Close()
+// 	// 		decompressed, err := io.ReadAll(reader)
+// 	// 		if err == nil {
+// 	// 			content = decompressed
+// 	// 		}
+// 	// 	}
+// 	// }
+
+// 	//	fmt.Println("LOG: contentcontent =", string(content))
+
+// 	//doc, err := html.Parse(bytes.NewReader(content))
+// 	doc, err := html.Parse(bytes.NewReader(content))
+// 	if err != nil {
+// 		return nil, fmt.Errorf("failed to parse HTML: %w", err)
+// 	}
+
+// 	fmt.Println("LOG: doc =", doc)
+
+// 	base, err := url.Parse(baseURL)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("invalid base URL: %w", err)
+// 	}
+
+// 	fmt.Println("LOG: base =", base)
+
+// 	result := &models.ParsedHTML{
+// 		Headings: make(map[string][]string),
+// 		Links:    []models.Link{},
+// 	}
+
+// 	// Extract information by traversing the HTML tree
+// 	p.traverse(doc, base, result)
+
+// 	return result, nil
+// }
 
 // DetectHTMLVersion detects the HTML version from the DOCTYPE
 func (p *HTMLParser) DetectHTMLVersion(content []byte) string {
@@ -179,18 +233,18 @@ func (p *HTMLParser) DetectHTMLVersion(content []byte) string {
 func (p *HTMLParser) ExtractTitle(content []byte) string {
 
 	// Check if content is gzip compressed
-	if len(content) > 2 && content[0] == 0x1f && content[1] == 0x8b {
-		reader, err := gzip.NewReader(bytes.NewReader(content))
-		if err == nil {
-			defer reader.Close()
-			decompressed, err := io.ReadAll(reader)
-			if err == nil {
-				content = decompressed
-			}
-		}
-	}
+	// if len(content) > 2 && content[0] == 0x1f && content[1] == 0x8b {
+	// 	reader, err := gzip.NewReader(bytes.NewReader(content))
+	// 	if err == nil {
+	// 		defer reader.Close()
+	// 		decompressed, err := io.ReadAll(reader)
+	// 		if err == nil {
+	// 			content = decompressed
+	// 		}
+	// 	}
+	// }
 
-	fmt.Println("LOG: htmlStr =", content)
+	fmt.Println("LOG: ExtractTitle =", content)
 
 	doc, err := html.Parse(bytes.NewReader(content))
 	if err != nil {
@@ -220,19 +274,23 @@ func (p *HTMLParser) traverse(node *html.Node, baseURL *url.URL, result *models.
 		case "title":
 			if node.FirstChild != nil && node.FirstChild.Type == html.TextNode {
 				result.Title = strings.TrimSpace(node.FirstChild.Data)
+				fmt.Printf("LOG: Found title: '%s'\n", result.Title)
 			}
 		case "h1", "h2", "h3", "h4", "h5", "h6":
 			text := p.extractText(node)
 			if text != "" {
 				result.Headings[node.Data] = append(result.Headings[node.Data], text)
+				fmt.Printf("LOG: Found %s: '%s'\n", node.Data, text)
 			}
 		case "a":
 			if link := p.extractLink(node, baseURL); link != nil {
 				result.Links = append(result.Links, *link)
+				fmt.Printf("LOG: Added %s link: '%s' -> %s\n", link.Type, link.Text, link.URL)
 			}
 		case "form":
 			if p.isLoginForm(node) {
 				result.HasLoginForm = true
+				fmt.Println("LOG: Found login form")
 			}
 		}
 	}
@@ -242,6 +300,36 @@ func (p *HTMLParser) traverse(node *html.Node, baseURL *url.URL, result *models.
 		p.traverse(child, baseURL, result)
 	}
 }
+
+// // traverse recursively traverses the HTML tree
+// func (p *HTMLParser) traverse(node *html.Node, baseURL *url.URL, result *models.ParsedHTML) {
+// 	if node.Type == html.ElementNode {
+// 		switch node.Data {
+// 		case "title":
+// 			if node.FirstChild != nil && node.FirstChild.Type == html.TextNode {
+// 				result.Title = strings.TrimSpace(node.FirstChild.Data)
+// 			}
+// 		case "h1", "h2", "h3", "h4", "h5", "h6":
+// 			text := p.extractText(node)
+// 			if text != "" {
+// 				result.Headings[node.Data] = append(result.Headings[node.Data], text)
+// 			}
+// 		case "a":
+// 			if link := p.extractLink(node, baseURL); link != nil {
+// 				result.Links = append(result.Links, *link)
+// 			}
+// 		case "form":
+// 			if p.isLoginForm(node) {
+// 				result.HasLoginForm = true
+// 			}
+// 		}
+// 	}
+
+// 	// Recursively traverse children
+// 	for child := node.FirstChild; child != nil; child = child.NextSibling {
+// 		p.traverse(child, baseURL, result)
+// 	}
+// }
 
 // extractText extracts text content from a node
 func (p *HTMLParser) extractText(node *html.Node) string {
@@ -261,6 +349,9 @@ func (p *HTMLParser) extractText(node *html.Node) string {
 
 // extractLink extracts link information from an anchor tag
 func (p *HTMLParser) extractLink(node *html.Node, baseURL *url.URL) *models.Link {
+
+	fmt.Println("LOG: extractLink =", node)
+
 	var href string
 	for _, attr := range node.Attr {
 		if attr.Key == "href" {

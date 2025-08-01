@@ -30,7 +30,7 @@ func NewAnalyzerClient(baseURL string, timeout time.Duration, logger interfaces.
 	return &HTTPAnalyzerClient{
 		baseURL: baseURL,
 		httpClient: &http.Client{
-			Timeout: timeout,
+			Timeout: 60 * time.Second,
 			Transport: &http.Transport{
 				MaxIdleConns:        10,
 				MaxIdleConnsPerHost: 10,

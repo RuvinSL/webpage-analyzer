@@ -28,7 +28,7 @@ func NewLinkCheckerClient(baseURL string, timeout time.Duration, logger interfac
 			Transport: &http.Transport{
 				MaxIdleConns:        10,
 				MaxIdleConnsPerHost: 10,
-				IdleConnTimeout:     30 * time.Second,
+				IdleConnTimeout:     60 * time.Second,
 			},
 		},
 		logger: logger,
