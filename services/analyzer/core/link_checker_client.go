@@ -12,14 +12,12 @@ import (
 	"github.com/RuvinSL/webpage-analyzer/pkg/models"
 )
 
-// LinkCheckerClient implements the LinkChecker interface using HTTP
 type LinkCheckerClient struct {
 	baseURL    string
 	httpClient *http.Client
 	logger     interfaces.Logger
 }
 
-// NewLinkCheckerClient creates a new link checker client
 func NewLinkCheckerClient(baseURL string, timeout time.Duration, logger interfaces.Logger) *LinkCheckerClient {
 	return &LinkCheckerClient{
 		baseURL: baseURL,
@@ -35,7 +33,6 @@ func NewLinkCheckerClient(baseURL string, timeout time.Duration, logger interfac
 	}
 }
 
-// CheckLinks checks multiple links by calling the link checker service
 func (c *LinkCheckerClient) CheckLinks(ctx context.Context, links []models.Link) ([]models.LinkStatus, error) {
 	if len(links) == 0 {
 		return []models.LinkStatus{}, nil
@@ -105,7 +102,6 @@ func (c *LinkCheckerClient) CheckLinks(ctx context.Context, links []models.Link)
 func (c *LinkCheckerClient) CheckLink(ctx context.Context, link models.Link) models.LinkStatus {
 	c.logger.Debug("Checking single link via link checker service", "url", link.URL)
 
-	// Prepare request body
 	requestBody := struct {
 		Link models.Link `json:"link"`
 	}{
@@ -160,7 +156,6 @@ func (c *LinkCheckerClient) CheckLink(ctx context.Context, link models.Link) mod
 	return status
 }
 
-// CheckHealth checks if the link checker service is healthy
 func (c *LinkCheckerClient) CheckHealth(ctx context.Context) error {
 	req, err := http.NewRequestWithContext(ctx, "GET", c.baseURL+"/health", nil)
 	if err != nil {

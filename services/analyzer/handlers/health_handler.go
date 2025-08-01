@@ -10,12 +10,10 @@ import (
 	"github.com/RuvinSL/webpage-analyzer/pkg/models"
 )
 
-// HealthChecker interface for checking dependent services
 type HealthChecker interface {
 	CheckHealth(ctx context.Context) error
 }
 
-// HealthHandler handles health check requests
 type HealthHandler struct {
 	serviceName       string
 	linkCheckerClient HealthChecker
@@ -36,17 +34,14 @@ func (h *HealthHandler) Health(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 	defer cancel()
 
-	// Check dependent services
 	checks := make(map[string]string)
 
-	// Check link checker service
 	if err := h.linkCheckerClient.CheckHealth(ctx); err != nil {
 		checks["link_checker_service"] = "unhealthy: " + err.Error()
 	} else {
 		checks["link_checker_service"] = "healthy"
 	}
 
-	// Determine overall status
 	status := "healthy"
 	for _, check := range checks {
 		if check != "healthy" {
@@ -55,7 +50,6 @@ func (h *HealthHandler) Health(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Build response
 	response := models.HealthStatus{
 		Status:    status,
 		Service:   h.serviceName,
@@ -65,7 +59,6 @@ func (h *HealthHandler) Health(w http.ResponseWriter, r *http.Request) {
 		Timestamp: time.Now(),
 	}
 
-	// Set appropriate status code
 	statusCode := http.StatusOK
 	if status != "healthy" {
 		statusCode = http.StatusServiceUnavailable
@@ -77,7 +70,6 @@ func (h *HealthHandler) Health(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-// formatDuration formats a duration to a human-readable string
 func formatDuration(d time.Duration) string {
 	days := int(d.Hours() / 24)
 	hours := int(d.Hours()) % 24

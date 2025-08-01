@@ -38,7 +38,6 @@ func NewAnalyzerClient(baseURL string, timeout time.Duration, logger interfaces.
 	}
 }
 
-// Analyze calls the analyzer service to analyze a URL
 func (c *HTTPAnalyzerClient) Analyze(ctx context.Context, url string) (*models.AnalysisResult, error) {
 	// Prepare request
 	reqBody := models.AnalysisRequest{URL: url}
@@ -54,7 +53,6 @@ func (c *HTTPAnalyzerClient) Analyze(ctx context.Context, url string) (*models.A
 	}
 	req.Header.Set("Content-Type", "application/json")
 
-	// Add request ID from context if available
 	if requestID, ok := ctx.Value("request_id").(string); ok {
 		req.Header.Set("X-Request-ID", requestID)
 	}
@@ -93,7 +91,6 @@ func (c *HTTPAnalyzerClient) Analyze(ctx context.Context, url string) (*models.A
 	return &result, nil
 }
 
-// CheckHealth checks if the analyzer service is healthy
 func (c *HTTPAnalyzerClient) CheckHealth(ctx context.Context) error {
 	req, err := http.NewRequestWithContext(ctx, "GET", c.baseURL+"/health", nil)
 	if err != nil {

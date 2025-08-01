@@ -9,14 +9,12 @@ import (
 	"github.com/RuvinSL/webpage-analyzer/pkg/models"
 )
 
-// APIHandler handles API requests
 type APIHandler struct {
 	analyzerClient AnalyzerClient
 	logger         interfaces.Logger
 	metrics        interfaces.MetricsCollector
 }
 
-// NewAPIHandler creates a new API handler
 func NewAPIHandler(analyzerClient AnalyzerClient, logger interfaces.Logger, metrics interfaces.MetricsCollector) *APIHandler {
 	return &APIHandler{
 		analyzerClient: analyzerClient,
@@ -25,7 +23,6 @@ func NewAPIHandler(analyzerClient AnalyzerClient, logger interfaces.Logger, metr
 	}
 }
 
-// AnalyzeURL handles the URL analysis endpoint
 func (h *APIHandler) AnalyzeURL(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
@@ -50,7 +47,6 @@ func (h *APIHandler) AnalyzeURL(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.logger.Error("Analysis failed", "url", req.URL, "error", err)
 
-		// Determine appropriate error response
 		if err.Error() == "context deadline exceeded" {
 			h.sendError(w, "Analysis timeout", http.StatusGatewayTimeout)
 		} else {
@@ -68,7 +64,6 @@ func (h *APIHandler) AnalyzeURL(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// BatchAnalyze handles batch URL analysis (future feature)
 func (h *APIHandler) BatchAnalyze(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
@@ -91,12 +86,11 @@ func (h *APIHandler) BatchAnalyze(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Process URLs concurrently
+	// Process URLs concurrently - Ruvin
 	start := time.Now()
 	results := make([]models.AnalysisResult, 0, len(req.URLs))
 	errors := make([]models.ErrorResponse, 0)
 
-	// Note: In a real implementation, this would use goroutines with proper concurrency control
 	for _, url := range req.URLs {
 		result, err := h.analyzerClient.Analyze(ctx, url)
 		if err != nil {

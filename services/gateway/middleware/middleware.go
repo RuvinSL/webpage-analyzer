@@ -10,10 +10,9 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// RequestID middleware adds a unique request ID to the context
 func RequestID(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Check if request ID exists in header
+
 		requestID := r.Header.Get("X-Request-ID")
 		if requestID == "" {
 			// Generate new request ID
@@ -31,7 +30,6 @@ func RequestID(next http.Handler) http.Handler {
 	})
 }
 
-// Logging middleware logs all HTTP requests
 func Logging(logger interfaces.Logger) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -74,7 +72,6 @@ func Logging(logger interfaces.Logger) mux.MiddlewareFunc {
 	}
 }
 
-// Metrics middleware records HTTP metrics
 func Metrics(collector interfaces.MetricsCollector) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -163,13 +160,11 @@ func (rw *responseWriter) Write(b []byte) (int, error) {
 	return rw.ResponseWriter.Write(b)
 }
 
-// generateRequestID generates a unique request ID
 func generateRequestID() string {
 	// In production, use a proper UUID library
 	return fmt.Sprintf("%d-%s", time.Now().Unix(), generateRandomString(8))
 }
 
-// generateRandomString generates a random string of specified length
 func generateRandomString(length int) string {
 	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	b := make([]byte, length)

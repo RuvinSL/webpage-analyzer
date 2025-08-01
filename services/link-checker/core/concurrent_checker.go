@@ -10,15 +10,12 @@ import (
 	"github.com/RuvinSL/webpage-analyzer/pkg/models"
 )
 
-// ConcurrentLinkChecker implements concurrent link checking with worker pool
-// Follows Single Responsibility Principle: Only responsible for coordinating concurrent link checks
 type ConcurrentLinkChecker struct {
 	httpClient     interfaces.HTTPClient
 	workerPoolSize int
 	logger         interfaces.Logger
 	metrics        interfaces.MetricsCollector
 
-	// Worker pool management
 	jobQueue    chan linkCheckJob
 	resultQueue chan models.LinkStatus
 	workerWG    sync.WaitGroup
@@ -30,7 +27,6 @@ type linkCheckJob struct {
 	link models.Link
 }
 
-// NewConcurrentLinkChecker creates a new concurrent link checker
 func NewConcurrentLinkChecker(
 	httpClient interfaces.HTTPClient,
 	workerPoolSize int,
@@ -48,7 +44,6 @@ func NewConcurrentLinkChecker(
 	}
 }
 
-// Start initializes and starts the worker pool
 func (c *ConcurrentLinkChecker) Start(ctx context.Context) {
 	c.logger.Info("Starting link checker worker pool", "workers", c.workerPoolSize)
 
@@ -59,7 +54,6 @@ func (c *ConcurrentLinkChecker) Start(ctx context.Context) {
 	}
 }
 
-// Stop gracefully shuts down the worker pool
 func (c *ConcurrentLinkChecker) Stop() {
 	c.logger.Info("Stopping link checker worker pool")
 
@@ -87,7 +81,6 @@ func (c *ConcurrentLinkChecker) CheckLinks(ctx context.Context, links []models.L
 	start := time.Now()
 	c.logger.Info("Starting batch link check", "link_count", len(links))
 
-	// Create a context with timeout for the entire batch
 	checkCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 
@@ -151,7 +144,7 @@ func (c *ConcurrentLinkChecker) CheckLinks(ctx context.Context, links []models.L
 		if status, exists := resultMap[link.URL]; exists {
 			results = append(results, status)
 		} else {
-			// Link wasn't checked (shouldn't happen)
+
 			results = append(results, models.LinkStatus{
 				Link:       link,
 				Accessible: false,
@@ -173,7 +166,6 @@ func (c *ConcurrentLinkChecker) CheckLinks(ctx context.Context, links []models.L
 	return results, nil
 }
 
-// CheckLink checks a single link
 func (c *ConcurrentLinkChecker) CheckLink(ctx context.Context, link models.Link) models.LinkStatus {
 	start := time.Now()
 	defer func() {
@@ -183,7 +175,6 @@ func (c *ConcurrentLinkChecker) CheckLink(ctx context.Context, link models.Link)
 
 	c.logger.Debug("Checking link", "url", link.URL, "type", link.Type)
 
-	// Create timeout context for individual link check
 	checkCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
@@ -212,7 +203,6 @@ func (c *ConcurrentLinkChecker) CheckLink(ctx context.Context, link models.Link)
 	return status
 }
 
-// worker is a goroutine that processes link check jobs
 func (c *ConcurrentLinkChecker) worker(ctx context.Context, id int) {
 	defer c.workerWG.Done()
 

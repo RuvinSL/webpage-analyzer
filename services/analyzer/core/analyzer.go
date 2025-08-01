@@ -9,8 +9,6 @@ import (
 	"github.com/RuvinSL/webpage-analyzer/pkg/models"
 )
 
-// Analyzer implements the web page analysis logic
-// Follows Single Responsibility Principle: Coordinates analysis but delegates specific tasks
 type Analyzer struct {
 	httpClient  interfaces.HTTPClient
 	htmlParser  interfaces.HTMLParser
@@ -19,8 +17,6 @@ type Analyzer struct {
 	metrics     interfaces.MetricsCollector
 }
 
-// NewAnalyzer creates a new analyzer instance with dependency injection
-// Follows Dependency Inversion Principle: Depends on interfaces, not concrete implementations
 func NewAnalyzer(
 	httpClient interfaces.HTTPClient,
 	htmlParser interfaces.HTMLParser,
@@ -37,8 +33,6 @@ func NewAnalyzer(
 	}
 }
 
-// AnalyzeURL performs complete analysis of a web page
-// Follows Open/Closed Principle: Open for extension through interfaces, closed for modification
 func (a *Analyzer) AnalyzeURL(ctx context.Context, url string) (*models.AnalysisResult, error) {
 	start := time.Now()
 	defer func() {
@@ -48,7 +42,7 @@ func (a *Analyzer) AnalyzeURL(ctx context.Context, url string) (*models.Analysis
 
 	a.logger.Info("Starting URL analysis", "url", url)
 
-	// Step 1: Fetch the web page
+	// Fetch the web page
 	response, err := a.fetchWebPage(ctx, url)
 	if err != nil {
 		a.logger.Error("Failed to fetch web page", "url", url, "error", err)
@@ -56,36 +50,30 @@ func (a *Analyzer) AnalyzeURL(ctx context.Context, url string) (*models.Analysis
 		return nil, err
 	}
 
-	// Step 2: Detect HTML version
+	// Detect HTML version
 	htmlVersion := a.htmlParser.DetectHTMLVersion(response.Body)
 
-	fmt.Println("LOG: htmlVersion =", htmlVersion)
-
-	fmt.Println("LOG: ctx =", ctx)
 	//fmt.Println("LOG: response.Body =", response.Body)
-	fmt.Println("LOG: url =", url)
 
-	// Step 3: Parse HTML content
+	// Parse HTML content
 	parsed, err := a.htmlParser.ParseHTML(ctx, response.Body, url)
-
-	fmt.Println("LOG:  HTML content =", parsed)
 
 	if err != nil {
 		a.logger.Error("Failed to parse HTML", "url", url, "error", err)
 		return nil, fmt.Errorf("failed to parse HTML: %w", err)
 	}
 
-	// Step 4: Count headings
+	// Count headings
 	headingCount := a.countHeadings(parsed.Headings)
 
-	// Step 5: Check links concurrently
+	// Check links concurrently
 	linkStatuses, err := a.linkChecker.CheckLinks(ctx, parsed.Links)
 	if err != nil {
 		a.logger.Warn("Failed to check some links", "error", err)
 		// Continue with partial results
 	}
 
-	// Step 6: Summarize links
+	// Summarize links
 	linkSummary := a.summarizeLinks(parsed.Links, linkStatuses)
 
 	// Build result
@@ -108,7 +96,6 @@ func (a *Analyzer) AnalyzeURL(ctx context.Context, url string) (*models.Analysis
 	return result, nil
 }
 
-// fetchWebPage fetches the content of a web page
 func (a *Analyzer) fetchWebPage(ctx context.Context, url string) (*models.HTTPResponse, error) {
 	response, err := a.httpClient.Get(ctx, url)
 	if err != nil {
@@ -122,7 +109,7 @@ func (a *Analyzer) fetchWebPage(ctx context.Context, url string) (*models.HTTPRe
 	return response, nil
 }
 
-// countHeadings counts headings by level
+// headings by level
 func (a *Analyzer) countHeadings(headings map[string][]string) models.HeadingCount {
 	return models.HeadingCount{
 		H1: len(headings["h1"]),
@@ -134,13 +121,11 @@ func (a *Analyzer) countHeadings(headings map[string][]string) models.HeadingCou
 	}
 }
 
-// summarizeLinks creates a summary of link statuses
 func (a *Analyzer) summarizeLinks(links []models.Link, statuses []models.LinkStatus) models.LinkSummary {
 	summary := models.LinkSummary{
 		Total: len(links),
 	}
 
-	// Create a map for quick status lookup
 	statusMap := make(map[string]models.LinkStatus)
 	for _, status := range statuses {
 		statusMap[status.Link.URL] = status

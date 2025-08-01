@@ -10,14 +10,12 @@ import (
 	"github.com/RuvinSL/webpage-analyzer/pkg/models"
 )
 
-// HealthHandler handles health check requests
 type HealthHandler struct {
 	serviceName    string
 	analyzerClient AnalyzerClient
 	startTime      time.Time
 }
 
-// NewHealthHandler creates a new health handler
 func NewHealthHandler(serviceName string, analyzerClient AnalyzerClient) *HealthHandler {
 	return &HealthHandler{
 		serviceName:    serviceName,
@@ -26,7 +24,6 @@ func NewHealthHandler(serviceName string, analyzerClient AnalyzerClient) *Health
 	}
 }
 
-// Health handles the health check endpoint
 func (h *HealthHandler) Health(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 5*time.Second)
 	defer cancel()
@@ -60,7 +57,6 @@ func (h *HealthHandler) Health(w http.ResponseWriter, r *http.Request) {
 		Timestamp: time.Now(),
 	}
 
-	// Set appropriate status code
 	statusCode := http.StatusOK
 	if status != "healthy" {
 		statusCode = http.StatusServiceUnavailable
@@ -72,13 +68,10 @@ func (h *HealthHandler) Health(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(response)
 }
 
-// getVersion returns the service version
 func getVersion() string {
-	// In production, this would come from build info
 	return "1.0.0"
 }
 
-// formatDuration formats a duration to a human-readable string
 func formatDuration(d time.Duration) string {
 	days := int(d.Hours() / 24)
 	hours := int(d.Hours()) % 24

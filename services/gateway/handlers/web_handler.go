@@ -8,16 +8,13 @@ import (
 	"github.com/RuvinSL/webpage-analyzer/pkg/interfaces"
 )
 
-// WebHandler handles web UI requests
+// WebHandler
 type WebHandler struct {
 	logger    interfaces.Logger
 	templates *template.Template
 }
 
-// NewWebHandler creates a new web handler
 func NewWebHandler(logger interfaces.Logger) *WebHandler {
-	// In production, you would parse templates once at startup
-	// For simplicity, we'll serve the HTML directly
 	return &WebHandler{
 		logger: logger,
 	}

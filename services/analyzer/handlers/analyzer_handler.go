@@ -15,8 +15,7 @@ type AnalyzerHandler struct {
 	logger   interfaces.Logger // *slog.Logger
 }
 
-// NewAnalyzerHandler creates a new analyzer handler
-// func NewAnalyzerHandler(analyzer interfaces.Analyzer, logger *slog.Logger) *AnalyzerHandler {
+// func NewAnalyzerHandler(analyzer interfaces.Analyzer, logger *slog.Logger) *AnalyzerHandler { // slog.Logger showing errors so I added interfaces.Logger - Ruvin
 func NewAnalyzerHandler(analyzer interfaces.Analyzer, logger interfaces.Logger) *AnalyzerHandler {
 	return &AnalyzerHandler{
 		analyzer: analyzer,
@@ -24,7 +23,6 @@ func NewAnalyzerHandler(analyzer interfaces.Analyzer, logger interfaces.Logger) 
 	}
 }
 
-// Analyze handles the analyze endpoint
 func (h *AnalyzerHandler) Analyze(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
@@ -42,14 +40,12 @@ func (h *AnalyzerHandler) Analyze(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Extract request ID for logging
 	requestID := r.Header.Get("X-Request-ID")
 	h.logger.Info("Processing analysis request",
 		"url", req.URL,
 		"request_id", requestID,
 	)
 
-	// Perform analysis
 	result, err := h.analyzer.AnalyzeURL(ctx, req.URL)
 	if err != nil {
 		h.logger.Error("Analysis failed",
@@ -58,11 +54,9 @@ func (h *AnalyzerHandler) Analyze(w http.ResponseWriter, r *http.Request) {
 			"request_id", requestID,
 		)
 
-		// Determine appropriate error response
 		errorMessage := "Failed to analyze URL"
 		statusCode := http.StatusInternalServerError
 
-		// Check for specific error types
 		if err.Error() == "context deadline exceeded" {
 			errorMessage = "Analysis timeout"
 			statusCode = http.StatusGatewayTimeout
@@ -108,7 +102,6 @@ func (h *AnalyzerHandler) sendError(w http.ResponseWriter, message string, statu
 	}
 }
 
-// contains checks if a string contains a substring
 func contains(s, substr string) bool {
 	return len(s) >= len(substr) && s[:len(substr)] == substr
 }

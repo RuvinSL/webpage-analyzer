@@ -4,7 +4,6 @@ import (
 	"time"
 )
 
-// AnalysisRequest represents the incoming request for URL analysis
 type AnalysisRequest struct {
 	URL string `json:"url" validate:"required,url"`
 }
@@ -41,19 +40,17 @@ type LinkSummary struct {
 // ParsedHTML represents the parsed HTML content
 type ParsedHTML struct {
 	Title        string
-	Headings     map[string][]string // heading level -> list of heading texts
+	Headings     map[string][]string // heading level
 	Links        []Link
 	HasLoginForm bool
 }
 
-// Link represents a hyperlink found in the document
 type Link struct {
 	URL  string   `json:"url"`
 	Text string   `json:"text"`
 	Type LinkType `json:"type"`
 }
 
-// LinkType represents the type of link
 type LinkType string
 
 const (
@@ -62,7 +59,6 @@ const (
 	LinkTypeUnknown  LinkType = "unknown"
 )
 
-// LinkStatus represents the accessibility status of a link
 type LinkStatus struct {
 	Link       Link      `json:"link"`
 	Accessible bool      `json:"accessible"`
@@ -71,14 +67,12 @@ type LinkStatus struct {
 	CheckedAt  time.Time `json:"checked_at"`
 }
 
-// HTTPResponse represents an HTTP response
 type HTTPResponse struct {
 	StatusCode int
 	Body       []byte
 	Headers    map[string][]string
 }
 
-// ErrorResponse represents an error response
 type ErrorResponse struct {
 	Error      string    `json:"error"`
 	StatusCode int       `json:"status_code"`
@@ -86,7 +80,6 @@ type ErrorResponse struct {
 	Timestamp  time.Time `json:"timestamp"`
 }
 
-// HealthStatus represents the health status of a service
 type HealthStatus struct {
 	Status    string            `json:"status"`
 	Service   string            `json:"service"`
@@ -96,7 +89,6 @@ type HealthStatus struct {
 	Timestamp time.Time         `json:"timestamp"`
 }
 
-// MetricsData represents metrics information
 type MetricsData struct {
 	RequestCount        int64   `json:"request_count"`
 	ErrorCount          int64   `json:"error_count"`
@@ -115,7 +107,6 @@ type BatchAnalysisRequest struct {
 	URLs []string `json:"urls" validate:"required,min=1,max=100,dive,url"`
 }
 
-// BatchAnalysisResult represents the result of batch analysis
 type BatchAnalysisResult struct {
 	Results   []AnalysisResult `json:"results"`
 	Errors    []ErrorResponse  `json:"errors,omitempty"`
