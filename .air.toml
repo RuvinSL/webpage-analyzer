@@ -1,0 +1,11 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+  bin = "tmp\\gateway.exe"
+  cmd = "go build -o tmp\\gateway.exe ./services/gateway"
+  delay = 1000
+  exclude_dir = ["assets", "tmp", "vendor", "testdata"]
+  include_dir = ["services/gateway", "web", "pkg"]
+  include_ext = ["go", "html"]
+  kill_delay = "0s"

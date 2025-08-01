@@ -1,22 +1,48 @@
+# .air.toml - Root directory configuration
 root = "."
+testdata_dir = "testdata"
 tmp_dir = "tmp"
 
 [build]
-  cmd = "go run ./services/gateway"
-  bin = ""
-  delay = 1000
-  exclude_dir = ["tmp", "vendor"]
-  include_ext = ["go", "html", "tpl", "tmpl"]
-  kill_delay = "500ms"
-  log = "build-errors.log"
+  # Build all services sequentially
+  cmd = "air_windows.bat"
+  bin = "air_windows.bat"
+  full_bin = "air_windows.bat"
+  
+  # Windows-specific settings
+  delay = 2000
+  kill_delay = "2s"
+  poll = true
+  poll_interval = 1000
   send_interrupt = true
   stop_on_error = true
 
+  # Watch these directories
+  include_dir = ["services", "pkg"]
+  
+  # Watch these file extensions
+  include_ext = ["go", "html", "tmpl"]
+  
+  # Exclude these directories
+  exclude_dir = ["tmp", "vendor", ".git", "docs", "web/static", "tests"]
+  
+  # Log build errors
+  log = "tmp/air_build_errors.log"
+
 [color]
-  main = "magenta"
-  watcher = "cyan"
+  app = ""
   build = "yellow"
+  main = "magenta"
   runner = "green"
+  watcher = "cyan"
+
+[log]
+  main_only = false
+  time = true
 
 [misc]
-  clean_on_exit = true
+  clean_on_exit = false
+
+[screen]
+  clear_on_rebuild = false
+  keep_scroll = true
