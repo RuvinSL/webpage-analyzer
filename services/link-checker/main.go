@@ -45,7 +45,6 @@ func main() {
 	// Initialize dependencies
 	httpClient := httpclient.New(checkTimeout, log)
 
-	// Initialize link checker with worker pool
 	linkChecker := core.NewConcurrentLinkChecker(
 		httpClient,
 		workerPoolSize,
