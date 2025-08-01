@@ -10,7 +10,6 @@ import (
 	"github.com/RuvinSL/webpage-analyzer/pkg/interfaces"
 )
 
-// New creates a new structured logger that implements interfaces.Logger
 func New(service string, level slog.Level) interfaces.Logger {
 	opts := &slog.HandlerOptions{
 		Level: level,
@@ -36,7 +35,6 @@ func New(service string, level slog.Level) interfaces.Logger {
 	return NewAdapter(baseLogger)
 }
 
-// WithContext creates a logger with context values
 func WithContext(ctx context.Context, logger interfaces.Logger) interfaces.Logger {
 	if requestID, ok := ctx.Value("request_id").(string); ok {
 		return logger.With(slog.String("request_id", requestID))
@@ -44,7 +42,6 @@ func WithContext(ctx context.Context, logger interfaces.Logger) interfaces.Logge
 	return logger
 }
 
-// WithError adds an error to the logger
 func WithError(logger interfaces.Logger, err error) interfaces.Logger {
 	if err != nil {
 		return logger.With(slog.String("error", err.Error()))
@@ -52,12 +49,10 @@ func WithError(logger interfaces.Logger, err error) interfaces.Logger {
 	return logger
 }
 
-// LoggerAdapter implements interfaces.Logger using slog
 type LoggerAdapter struct {
 	logger *slog.Logger
 }
 
-// NewAdapter creates a new logger adapter
 func NewAdapter(logger *slog.Logger) interfaces.Logger {
 	return &LoggerAdapter{logger: logger}
 }
