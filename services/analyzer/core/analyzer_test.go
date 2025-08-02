@@ -245,7 +245,7 @@ func TestAnalyzer_AnalyzeURL(t *testing.T) {
 	}
 }
 
-func TestAnalyzer_countHeadings(t *testing.T) {
+func TestAnalyzercountHeadings(t *testing.T) {
 	analyzer := &Analyzer{}
 
 	tests := []struct {
@@ -294,7 +294,7 @@ func TestAnalyzer_countHeadings(t *testing.T) {
 	}
 }
 
-func TestAnalyzer_summarizeLinks(t *testing.T) {
+func TestAnalyzersummarizeLinks(t *testing.T) {
 	analyzer := &Analyzer{}
 
 	tests := []struct {

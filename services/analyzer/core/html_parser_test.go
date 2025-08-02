@@ -13,8 +13,14 @@ import (
 	"golang.org/x/net/html"
 )
 
-func TestHTMLParser_DetectHTMLVersion(t *testing.T) {
-	parser := &HTMLParser{}
+func TestHTMLParserDetectHTMLVersion(t *testing.T) {
+	//parser := &HTMLParser{}
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockLogger := mocks.NewMockLogger(ctrl)
+	mockLogger.EXPECT().Debug(gomock.Any(), gomock.Any()).AnyTimes()
+	parser := NewHTMLParser(mockLogger)
 
 	tests := []struct {
 		name     string
@@ -71,8 +77,17 @@ func TestHTMLParser_DetectHTMLVersion(t *testing.T) {
 	}
 }
 
-func TestHTMLParser_ExtractTitle(t *testing.T) {
-	parser := &HTMLParser{}
+func TestHTMLParserExtractTitle(t *testing.T) {
+
+	// OLD - CAUSES PANIC
+	//parser := &HTMLParser{}
+
+	// NEW - WORKS
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockLogger := mocks.NewMockLogger(ctrl)
+	mockLogger.EXPECT().Debug(gomock.Any(), gomock.Any()).AnyTimes()
+	parser := NewHTMLParser(mockLogger)
 
 	tests := []struct {
 		name     string
@@ -123,7 +138,7 @@ func TestHTMLParser_ExtractTitle(t *testing.T) {
 	}
 }
 
-func TestHTMLParser_ParseHTML(t *testing.T) {
+func TestHTMLParserParseHTML(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -297,7 +312,7 @@ func TestHTMLParser_ParseHTML(t *testing.T) {
 		{
 			name:        "invalid base URL",
 			content:     `<html></html>`,
-			baseURL:     "not a valid url",
+			baseURL:     "ht tp://invalid url with spaces",
 			expected:    nil,
 			expectError: true,
 		},
@@ -336,8 +351,14 @@ func TestHTMLParser_ParseHTML(t *testing.T) {
 	}
 }
 
-func TestHTMLParser_isLoginForm(t *testing.T) {
-	parser := &HTMLParser{}
+func TestHTMLParserisLoginForm(t *testing.T) {
+	//parser := &HTMLParser{}
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockLogger := mocks.NewMockLogger(ctrl)
+	mockLogger.EXPECT().Debug(gomock.Any(), gomock.Any()).AnyTimes()
+	parser := NewHTMLParser(mockLogger)
 
 	tests := []struct {
 		name     string

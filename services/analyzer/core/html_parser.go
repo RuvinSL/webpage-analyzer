@@ -81,7 +81,9 @@ func (p *HTMLParser) DetectHTMLVersion(content []byte) string {
 
 	lines := strings.Split(htmlStr, "\n")
 	if len(lines) > 0 {
-		p.logger.Debug("First line of HTML", "line", lines[0])
+		if p.logger != nil {
+			p.logger.Debug("First line of HTML", "line", lines[0])
+		}
 	}
 
 	htmlLower := strings.ToLower(htmlStr)
@@ -91,8 +93,10 @@ func (p *HTMLParser) DetectHTMLVersion(content []byte) string {
 		doctypeEnd := strings.Index(htmlStr, ">")
 		if doctypeEnd > 0 {
 			doctype := htmlStr[:doctypeEnd+1]
-			p.logger.Debug("Found DOCTYPE", "doctype", doctype)
 
+			if p.logger != nil {
+				p.logger.Debug("Found DOCTYPE", "doctype", doctype)
+			}
 			doctypeLower := strings.ToLower(doctype)
 
 			// HTML5 - just <!DOCTYPE html>
@@ -151,7 +155,9 @@ func (p *HTMLParser) DetectHTMLVersion(content []byte) string {
 	}
 
 	if strings.Contains(first1000, "<!doctype") {
-		p.logger.Debug("DOCTYPE found but not at beginning", "position", strings.Index(first1000, "<!doctype"))
+		if p.logger != nil {
+			p.logger.Debug("DOCTYPE found but not at beginning", "position", strings.Index(first1000, "<!doctype"))
+		}
 		return "DOCTYPE not at beginning"
 	}
 
@@ -243,13 +249,16 @@ func (p *HTMLParser) extractLink(node *html.Node, baseURL *url.URL) *models.Link
 		}
 	}
 
-	if href == "" || strings.HasPrefix(href, "#") || strings.HasPrefix(href, "javascript:") {
+	if href == "" || strings.HasPrefix(href, "#") || strings.HasPrefix(href, "javascript:") ||
+		strings.HasPrefix(href, "mailto:") {
 		return nil
 	}
 
 	linkURL, err := url.Parse(href)
 	if err != nil {
-		p.logger.Debug("Failed to parse link URL", "href", href, "error", err)
+		if p.logger != nil {
+			p.logger.Debug("Failed to parse link URL", "href", href, "error", err)
+		}
 		return nil
 	}
 
