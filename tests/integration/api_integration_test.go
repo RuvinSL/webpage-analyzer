@@ -25,7 +25,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestIntegration_CompleteAnalysisFlow(t *testing.T) {
+func TestIntegrationCompleteAnalysisFlow(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping integration test")
 	}
@@ -199,7 +199,7 @@ func startGatewayService(t *testing.T, analyzerURL string) string {
 	return server.URL
 }
 
-func TestIntegration_ConcurrentRequests(t *testing.T) {
+func TestIntegrationConcurrentRequests(t *testing.T) {
 	if testing.Short() {
 		t.Skip("Skipping integration test")
 	}
