@@ -16,7 +16,6 @@ My Local Docker Version is: 28.1.1, build 4eba377
 
 ```
  docker-compose build --no-cache
-
 ```
 
 ```
@@ -32,12 +31,10 @@ expected results:
  docker-compose up -d 
  OR
  docker-compose up 
-
 ```
 4. the app can be accessed from:
 ```
 http://localhost:8080 
-
 ```
 
 ### The technologies used for FE, BE, DevOps and field validation 
