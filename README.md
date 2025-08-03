@@ -1,13 +1,13 @@
 ## Documentation:
 
-### Mention about project overview, prerequisites, technology used (URLs for BE and FE, DevOps, URLs for API docs, API specs)
+### Project overview, prerequisites, technology used (URLs for BE and FE, DevOps, URLs for API docs, API specs)
 Pending updates
 
 
-### Mention any external dependencies, how to install them if there are any
+### Any external dependencies, how to install them if there are any
 Pending updates
 
-### Mention setup instructions for installation to run the project
+### Setup instructions for installation to run the project
 My Local Docker Version is: 28.1.1, build 4eba377
 
 1. Clone the repo OR download zip and extract into a folder
@@ -29,15 +29,15 @@ expected results:
 http://localhost:8080 
 
 
-### Update the technologies used for FE, BE, DevOps and field validation if present
+### The technologies used for FE, BE, DevOps and field validation 
 Pending updates
 
 
-### Mention the usage of the App with main functionalities and their role in the Application (Eg: authentication, logging, error handling)
+### The usage of the App with main functionalities and their role in the Application (Eg: authentication, logging, error handling)
 Pending updates
 
 
-### Challenges you faced and the approaches you took to overcome
+### Challenges have been faced and the approaches took to overcome
 Pending updates
 
 
