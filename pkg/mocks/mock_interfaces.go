@@ -207,6 +207,21 @@ func (mr *MockHTTPClientMockRecorder) Get(ctx, url interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Get", reflect.TypeOf((*MockHTTPClient)(nil).Get), ctx, url)
 }
 
+// Head mocks base method.
+func (m *MockHTTPClient) Head(ctx context.Context, url string) (*models.HTTPResponse, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Head", ctx, url)
+	ret0, _ := ret[0].(*models.HTTPResponse)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// Head indicates an expected call of Head.
+func (mr *MockHTTPClientMockRecorder) Head(ctx, url interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Head", reflect.TypeOf((*MockHTTPClient)(nil).Head), ctx, url)
+}
+
 // MockLogger is a mock of Logger interface.
 type MockLogger struct {
 	ctrl     *gomock.Controller

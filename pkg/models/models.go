@@ -1,6 +1,7 @@
 package models
 
 import (
+	"net/http"
 	"time"
 )
 
@@ -70,7 +71,7 @@ type LinkStatus struct {
 type HTTPResponse struct {
 	StatusCode int
 	Body       []byte
-	Headers    map[string][]string
+	Headers    http.Header
 }
 
 type ErrorResponse struct {

@@ -206,8 +206,11 @@ go test -race ./...
 
 Run Tests with Coverage
 //go test -coverprofile=coverage.out ./...
+//go tool cover -html=coverage.out -o coverage.html
 go test -coverprofile coverage.out ./...
-go tool cover -html=coverage.out -o coverage.html
+go tool cover "-html=coverage.out" > coverage.html
+
+
 
 Run Specific Test
 # Run a specific test function

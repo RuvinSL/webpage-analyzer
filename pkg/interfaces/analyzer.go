@@ -23,6 +23,7 @@ type LinkChecker interface {
 
 type HTTPClient interface {
 	Get(ctx context.Context, url string) (*models.HTTPResponse, error)
+	Head(ctx context.Context, url string) (*models.HTTPResponse, error)
 }
 
 type Logger interface {
