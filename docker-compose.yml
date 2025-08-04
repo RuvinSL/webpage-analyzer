@@ -10,6 +10,9 @@ services:
       - ANALYZER_SERVICE_URL=http://analyzer:8081
       - LINK_CHECKER_SERVICE_URL=http://link-checker:8082
       - LOG_LEVEL=info
+      - LOG_TO_FILE=true
+      - LOG_DIR=/app/logs
+      - PORT=8080
     depends_on:
       - analyzer
       - link-checker
@@ -21,6 +24,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    volumes:
+      - ./logs:/app/logs
 
   analyzer:
     build:
@@ -31,6 +36,9 @@ services:
     environment:
       - LOG_LEVEL=info
       - LINK_CHECKER_SERVICE_URL=http://link-checker:8082
+      - LOG_TO_FILE=true
+      - LOG_DIR=/app/logs
+      - PORT=8081
     depends_on:
       - link-checker
     networks:
@@ -41,10 +49,8 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-    # volumes:
-    #   - ./:/app  # Mount current directory to /app in container
-    # working_dir: /app
-    # command: sh -c "go run main.go"  
+    volumes:
+      - ./logs:/app/logs
 
   link-checker:
     build:
@@ -56,6 +62,9 @@ services:
       - LOG_LEVEL=info
       - WORKER_POOL_SIZE=10
       - CHECK_TIMEOUT=5s
+      - LOG_TO_FILE=true
+      - LOG_DIR=/app/logs
+      - PORT=8082
     networks:
       - analyzer-network
     restart: unless-stopped
@@ -64,6 +73,9 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    volumes:
+      - ./logs:/app/logs
+
 
   prometheus:
     image: prom/prometheus:latest

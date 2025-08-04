@@ -27,35 +27,14 @@ const (
 )
 
 // createLogger creates a logger with optional file output
-// func createLogger() interfaces.Logger {
-// 	// Check if file logging is enabled via environment variable
-// 	if getEnv("LOG_TO_FILE", "false") == "true" {
-// 		logDir := getEnv("LOG_DIR", "./logs")
-// 		return logger.NewWithFiles(serviceName, getLogLevel(), logDir)
-// 	}
-
-// 	// Default: stdout only (your current behavior)
-// 	return logger.New(serviceName, getLogLevel())
-// }
-
 func createLogger() interfaces.Logger {
-	logToFile := getEnv("LOG_TO_FILE", "true")
-	logDir := getEnv("LOG_DIR", "./logs")
-
-	// DEBUG: Print what we're doing
-	fmt.Printf("=== LOGGER DEBUG ===\n")
-	fmt.Printf("LOG_TO_FILE: '%s'\n", logToFile)
-	fmt.Printf("LOG_DIR: '%s'\n", logDir)
-	fmt.Printf("Service: '%s'\n", serviceName)
-	fmt.Printf("Log Level: '%s'\n", getLogLevel().String())
-
-	if logToFile == "true" {
-		fmt.Printf("✅ Creating file logger at: %s/%s.log\n", logDir, serviceName)
+	// Check if file logging is enabled via environment variable
+	if getEnv("LOG_TO_FILE", "true") == "true" {
+		logDir := getEnv("LOG_DIR", "./logs")
 		return logger.NewWithFiles(serviceName, getLogLevel(), logDir)
 	}
 
-	fmt.Printf("ℹ️  Using stdout-only logger\n")
-	fmt.Printf("===================\n")
+	// Default: stdout only (your current behavior)
 	return logger.New(serviceName, getLogLevel())
 }
 
