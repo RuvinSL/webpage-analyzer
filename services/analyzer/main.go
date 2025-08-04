@@ -26,9 +26,43 @@ const (
 	serviceName = "analyzer"
 )
 
+// createLogger creates a logger with optional file output
+// func createLogger() interfaces.Logger {
+// 	// Check if file logging is enabled via environment variable
+// 	if getEnv("LOG_TO_FILE", "false") == "true" {
+// 		logDir := getEnv("LOG_DIR", "./logs")
+// 		return logger.NewWithFiles(serviceName, getLogLevel(), logDir)
+// 	}
+
+// 	// Default: stdout only (your current behavior)
+// 	return logger.New(serviceName, getLogLevel())
+// }
+
+func createLogger() interfaces.Logger {
+	logToFile := getEnv("LOG_TO_FILE", "true")
+	logDir := getEnv("LOG_DIR", "./logs")
+
+	// DEBUG: Print what we're doing
+	fmt.Printf("=== LOGGER DEBUG ===\n")
+	fmt.Printf("LOG_TO_FILE: '%s'\n", logToFile)
+	fmt.Printf("LOG_DIR: '%s'\n", logDir)
+	fmt.Printf("Service: '%s'\n", serviceName)
+	fmt.Printf("Log Level: '%s'\n", getLogLevel().String())
+
+	if logToFile == "true" {
+		fmt.Printf("✅ Creating file logger at: %s/%s.log\n", logDir, serviceName)
+		return logger.NewWithFiles(serviceName, getLogLevel(), logDir)
+	}
+
+	fmt.Printf("ℹ️  Using stdout-only logger\n")
+	fmt.Printf("===================\n")
+	return logger.New(serviceName, getLogLevel())
+}
+
 func main() {
 
-	log := logger.New(serviceName, getLogLevel())
+	//log := logger.New(serviceName, getLogLevel())
+	log := createLogger()
 
 	metricsCollector := metrics.NewPrometheusCollector(serviceName)
 	prometheus.MustRegister(metricsCollector.GetCollectors()...)
@@ -72,7 +106,15 @@ func main() {
 
 	// Start server
 	go func() {
-		log.Info("Starting Analyzer Service", "port", port)
+		//log.Info("Starting Analyzer Service", "port", port)
+		log.Info("Starting Analyzer Service",
+			"service", serviceName,
+			"port", port,
+			"log_level", getLogLevel().String(),
+			"log_to_file", getEnv("LOG_TO_FILE", "false"),
+			"log_dir", getEnv("LOG_DIR", "./logs"),
+			"version", getEnv("APP_VERSION", "dev"),
+		)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Error("Failed to start server", "error", err)
 			os.Exit(1)

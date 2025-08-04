@@ -29,9 +29,43 @@ const (
 	defaultCheckTimeout   = 5 * time.Second
 )
 
+// createLogger creates a logger with optional file output
+// func createLogger() interfaces.Logger {
+// 	// Check if file logging is enabled via environment variable
+// 	if getEnv("LOG_TO_FILE", "false") == "true" {
+// 		logDir := getEnv("LOG_DIR", "./logs")
+// 		return logger.NewWithFiles(serviceName, getLogLevel(), logDir)
+// 	}
+
+// 	// Default: stdout only (your current behavior)
+// 	return logger.New(serviceName, getLogLevel())
+// }
+
+func createLogger() interfaces.Logger {
+	logToFile := getEnv("LOG_TO_FILE", "true")
+	logDir := getEnv("LOG_DIR", "./logs")
+
+	// DEBUG: Print what we're doing
+	fmt.Printf("=== LOGGER DEBUG ===\n")
+	fmt.Printf("LOG_TO_FILE: '%s'\n", logToFile)
+	fmt.Printf("LOG_DIR: '%s'\n", logDir)
+	fmt.Printf("Service: '%s'\n", serviceName)
+	fmt.Printf("Log Level: '%s'\n", getLogLevel().String())
+
+	if logToFile == "true" {
+		fmt.Printf("✅ Creating file logger at: %s/%s.log\n", logDir, serviceName)
+		return logger.NewWithFiles(serviceName, getLogLevel(), logDir)
+	}
+
+	fmt.Printf("ℹ️  Using stdout-only logger\n")
+	fmt.Printf("===================\n")
+	return logger.New(serviceName, getLogLevel())
+}
+
 func main() {
 	// Initialize logger
-	log := logger.New(serviceName, getLogLevel())
+	//log := logger.New(serviceName, getLogLevel())
+	log := createLogger()
 
 	// Initialize metrics
 	metricsCollector := metrics.NewPrometheusCollector(serviceName)
@@ -92,6 +126,7 @@ func main() {
 			"worker_pool_size", workerPoolSize,
 			"check_timeout", checkTimeout,
 		)
+
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Error("Failed to start server", "error", err)
 			os.Exit(1)
