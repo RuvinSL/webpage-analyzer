@@ -47,8 +47,6 @@ func createLogger() interfaces.Logger {
 
 func main() {
 
-	// Load .env file if present
-	//_ = godotenv.Load()
 	// Initialize logger
 	//log := logger.New(serviceName, getLogLevel())
 	log := createLogger()

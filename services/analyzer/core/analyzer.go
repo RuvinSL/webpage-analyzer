@@ -18,6 +18,7 @@ type Analyzer struct {
 }
 
 func NewAnalyzer(
+
 	httpClient interfaces.HTTPClient,
 	htmlParser interfaces.HTMLParser,
 	linkChecker interfaces.LinkChecker,
@@ -140,6 +141,8 @@ func (a *Analyzer) summarizeLinks(links []models.Link, statuses []models.LinkSta
 		}
 
 		// Check if link is inaccessible
+		// fmt.Printf("=============== DEBUG ===\n")
+		// fmt.Printf("Service: %s\n", link.URL)
 		if status, exists := statusMap[link.URL]; exists && !status.Accessible {
 			summary.Inaccessible++
 		}

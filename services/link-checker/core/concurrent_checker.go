@@ -20,6 +20,8 @@ type ConcurrentLinkChecker struct {
 	resultQueue chan models.LinkStatus
 	workerWG    sync.WaitGroup
 	stopChan    chan struct{}
+	started     bool         // fixed - Ruvin
+	mu          sync.RWMutex // fixed - Ruvin
 }
 
 type linkCheckJob struct {
@@ -41,10 +43,20 @@ func NewConcurrentLinkChecker(
 		jobQueue:       make(chan linkCheckJob, workerPoolSize*2),
 		resultQueue:    make(chan models.LinkStatus, workerPoolSize*2),
 		stopChan:       make(chan struct{}),
+		started:        false, // added fixed - Ruvin
 	}
 }
 
+// fixed the code and added concurrent start
 func (c *ConcurrentLinkChecker) Start(ctx context.Context) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	if c.started {
+		c.logger.Warn("Link checker already started")
+		return
+	}
+
 	c.logger.Info("Starting link checker worker pool", "workers", c.workerPoolSize)
 
 	// Start workers
@@ -52,23 +64,31 @@ func (c *ConcurrentLinkChecker) Start(ctx context.Context) {
 		c.workerWG.Add(1)
 		go c.worker(ctx, i)
 	}
+
+	c.started = true
 }
 
 func (c *ConcurrentLinkChecker) Stop() {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
+	if !c.started {
+		return
+	}
+
 	c.logger.Info("Stopping link checker worker pool")
 
 	// Signal workers to stop
 	close(c.stopChan)
 
-	// Close job queue to prevent new jobs
-	close(c.jobQueue)
-
 	// Wait for all workers to finish
 	c.workerWG.Wait()
 
-	// Close result queue
+	// Close channels
+	close(c.jobQueue)
 	close(c.resultQueue)
 
+	c.started = false
 	c.logger.Info("Link checker worker pool stopped")
 }
 
@@ -84,81 +104,80 @@ func (c *ConcurrentLinkChecker) CheckLinks(ctx context.Context, links []models.L
 	checkCtx, cancel := context.WithTimeout(ctx, 30*time.Second)
 	defer cancel()
 
-	// Result collection
-	results := make([]models.LinkStatus, 0, len(links))
-	resultMap := make(map[string]models.LinkStatus)
-	resultMutex := sync.Mutex{}
+	// Create dedicated channels for this batch to avoid interference
+	batchJobQueue := make(chan linkCheckJob, len(links))
+	batchResultQueue := make(chan models.LinkStatus, len(links))
 
-	// Start result collector
-	resultWG := sync.WaitGroup{}
-	resultWG.Add(1)
+	// Start workers for this batch
+	var workerWG sync.WaitGroup
+	for i := 0; i < c.workerPoolSize; i++ {
+		workerWG.Add(1)
+		go func(workerID int) {
+			defer workerWG.Done()
+			for job := range batchJobQueue {
+				status := c.CheckLink(job.ctx, job.link)
+				select {
+				case batchResultQueue <- status:
+				case <-checkCtx.Done():
+					return
+				}
+			}
+		}(i)
+	}
+
+	// fixed Submit all jobs
 	go func() {
-		defer resultWG.Done()
-		for status := range c.resultQueue {
-			resultMutex.Lock()
-			resultMap[status.Link.URL] = status
-			resultMutex.Unlock()
+		defer close(batchJobQueue)
+		for _, link := range links {
+			select {
+			case batchJobQueue <- linkCheckJob{ctx: checkCtx, link: link}:
+			case <-checkCtx.Done():
+				return
+			}
 		}
 	}()
 
-	// Submit jobs
-	jobWG := sync.WaitGroup{}
-	for _, link := range links {
+	// Collect results
+	results := make([]models.LinkStatus, 0, len(links))
+	resultMap := make(map[string]models.LinkStatus)
+
+	// Start result collector
+	go func() {
+		defer close(batchResultQueue)
+		workerWG.Wait() // Wait for all workers to finish before closing result channel
+	}()
+
+	// Collect all results
+	for i := 0; i < len(links); i++ {
 		select {
+		case status := <-batchResultQueue:
+			resultMap[status.Link.URL] = status
 		case <-checkCtx.Done():
-			c.logger.Warn("Context cancelled during job submission")
+			c.logger.Warn("Context cancelled during result collection")
 			break
-		default:
-			jobWG.Add(1)
-			go func(l models.Link) {
-				defer jobWG.Done()
-				select {
-				case c.jobQueue <- linkCheckJob{ctx: checkCtx, link: l}:
-					// Job submitted successfully
-				case <-checkCtx.Done():
-					// Context cancelled, create timeout result
-					c.resultQueue <- models.LinkStatus{
-						Link:       l,
-						Accessible: false,
-						StatusCode: 0,
-						Error:      "Check timeout",
-						CheckedAt:  time.Now(),
-					}
-				}
-			}(link)
 		}
 	}
 
-	// Wait for all jobs to be submitted
-	jobWG.Wait()
-
-	// Wait a bit for results to be processed
-	time.Sleep(100 * time.Millisecond)
-
-	// Close result queue for this batch
-	resultWG.Wait()
-
 	// Convert map to slice maintaining order
-	resultMutex.Lock()
 	for _, link := range links {
 		if status, exists := resultMap[link.URL]; exists {
 			results = append(results, status)
 		} else {
-
+			// Create timeout result for unchecked links
 			results = append(results, models.LinkStatus{
 				Link:       link,
 				Accessible: false,
 				StatusCode: 0,
-				Error:      "Not checked",
+				Error:      "Check timeout or not processed",
 				CheckedAt:  time.Now(),
 			})
 		}
 	}
-	resultMutex.Unlock()
 
 	duration := time.Since(start)
 	c.logger.Info("Batch link check completed",
 		"link_count", len(links),
+		"processed_count", len(results),
 		"duration", duration,
 		"avg_time_per_link", duration/time.Duration(len(links)),
 	)
@@ -178,7 +197,7 @@ func (c *ConcurrentLinkChecker) CheckLink(ctx context.Context, link models.Link)
 	checkCtx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	// Perform HTTP HEAD request first (faster)
+	// Perform HTTP GET request
 	resp, err := c.httpClient.Get(checkCtx, link.URL)
 
 	status := models.LinkStatus{
@@ -231,6 +250,9 @@ func (c *ConcurrentLinkChecker) worker(ctx context.Context, id int) {
 				// Result sent successfully
 			case <-ctx.Done():
 				// Context cancelled while sending result
+				return
+			case <-c.stopChan:
+				// Stop signal received
 				return
 			}
 		}
