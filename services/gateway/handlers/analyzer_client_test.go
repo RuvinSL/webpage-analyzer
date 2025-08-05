@@ -410,12 +410,10 @@ func BenchmarkHTTPAnalyzerClient_Analyze(b *testing.B) {
 	}
 }
 
-// Test helper function to create test context with request ID
 func createTestContextWithRequestID(requestID string) context.Context {
 	return context.WithValue(context.Background(), "request_id", requestID)
 }
 
-// Example of testing error scenarios with table-driven tests
 func TestHTTPAnalyzerClient_Analyze_ErrorScenarios(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()

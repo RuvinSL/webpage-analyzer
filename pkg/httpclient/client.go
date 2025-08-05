@@ -104,7 +104,6 @@ func (c *Client) Get(ctx context.Context, url string) (*models.HTTPResponse, err
 	return response, nil
 }
 
-// Head performs an HTTP HEAD request (useful for link checking)
 func (c *Client) Head(ctx context.Context, url string) (*models.HTTPResponse, error) {
 	// Create request with context
 	req, err := http.NewRequestWithContext(ctx, http.MethodHead, url, nil)

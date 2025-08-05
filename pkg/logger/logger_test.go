@@ -536,7 +536,7 @@ func TestLoggerConcurrency(t *testing.T) {
 	}
 
 	output := buf.String()
-	// Should have 1000 log lines (10 goroutines * 100 iterations)
+	// Should have 1000 log lines
 	lines := strings.Split(strings.TrimSpace(output), "\n")
 	assert.Equal(t, 1000, len(lines))
 }
