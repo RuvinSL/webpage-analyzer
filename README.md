@@ -11,10 +11,10 @@ I follow microservices-based application approach to built the app in Golang tha
 
 ### Technology used
 Back-end Services:
-API Gateway: http://localhost:8080 - Main entry point for web UI and API routing
-Analyzer Service: http://localhost:8081 - Core analysis logic
-Link Checker Service: http://localhost:8082 - Concurrent link validation
-Metrics Service: http://localhost:9090 - Prometheus metrics endpoint
+ API Gateway: http://localhost:8080 - Main entry point for web UI and API routing
+ Analyzer Service: http://localhost:8081 - Core analysis logic
+ Link Checker Service: http://localhost:8082 - Concurrent link validation
+ Metrics Service: http://localhost:9090 - Prometheus metrics endpoint
 
 Front-end:
 Web UI: http://localhost:8080 - Simple HTML and CSS interface
