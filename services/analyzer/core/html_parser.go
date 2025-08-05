@@ -167,7 +167,7 @@ func (p *HTMLParser) DetectHTMLVersion(content []byte) string {
 
 func (p *HTMLParser) ExtractTitle(content []byte) string {
 
-	fmt.Println("LOG: ExtractTitle =", content)
+	//fmt.Println("LOG: ExtractTitle =", content)
 
 	doc, err := html.Parse(bytes.NewReader(content))
 	if err != nil {
@@ -196,23 +196,23 @@ func (p *HTMLParser) traverse(node *html.Node, baseURL *url.URL, result *models.
 		case "title":
 			if node.FirstChild != nil && node.FirstChild.Type == html.TextNode {
 				result.Title = strings.TrimSpace(node.FirstChild.Data)
-				fmt.Printf("LOG: Found title: '%s'\n", result.Title)
+				//fmt.Printf("LOG: Found title: '%s'\n", result.Title)
 			}
 		case "h1", "h2", "h3", "h4", "h5", "h6":
 			text := p.extractText(node)
 			if text != "" {
 				result.Headings[node.Data] = append(result.Headings[node.Data], text)
-				fmt.Printf("LOG: Found %s: '%s'\n", node.Data, text)
+				//fmt.Printf("LOG: Found %s: '%s'\n", node.Data, text)
 			}
 		case "a":
 			if link := p.extractLink(node, baseURL); link != nil {
 				result.Links = append(result.Links, *link)
-				fmt.Printf("LOG: Added %s link: '%s' -> %s\n", link.Type, link.Text, link.URL)
+				//fmt.Printf("LOG: Added %s link: '%s' -> %s\n", link.Type, link.Text, link.URL)
 			}
 		case "form":
 			if p.isLoginForm(node) {
 				result.HasLoginForm = true
-				fmt.Println("LOG: Found login form")
+				//fmt.Println("LOG: Found login form")
 			}
 		}
 	}
@@ -239,7 +239,7 @@ func (p *HTMLParser) extractText(node *html.Node) string {
 
 func (p *HTMLParser) extractLink(node *html.Node, baseURL *url.URL) *models.Link {
 
-	fmt.Println("LOG: extractLink =", node)
+	//fmt.Println("LOG: extractLink =", node)
 
 	var href string
 	for _, attr := range node.Attr {

@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -27,16 +26,12 @@ func NewLinkHandler(linkChecker interfaces.LinkChecker, logger interfaces.Logger
 // CheckLinks handles batch link checking
 func (h *LinkHandler) CheckLinks(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Printf("===----------------- LinkHandler) CheckLinks(w http.ResponseWriter, r *http.Reques DEBUG ===\n")
-
 	ctx := r.Context()
 
 	// Parse request
 	var req struct {
 		Links []models.Link `json:"links"`
 	}
-
-	fmt.Printf("===----------------- req  DEBUG ===%s", req)
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		h.logger.Error("Failed to parse request", "error", err)
@@ -57,14 +52,9 @@ func (h *LinkHandler) CheckLinks(w http.ResponseWriter, r *http.Request) {
 		"request_id", requestID,
 	)
 
-	fmt.Printf("===----------------- requestID  DEBUG ===%s", requestID)
-
 	// Check links
 	start := time.Now()
-	fmt.Printf("===----------------- start  DEBUG ===%s", start)
 	statuses, err := h.linkChecker.CheckLinks(ctx, req.Links)
-
-	fmt.Printf("===----------------- statuses) CheckLinks(w http.ResponseWriter, r *http.Reques DEBUG ===%s", statuses)
 
 	if err != nil {
 		h.logger.Error("Failed to check links",
