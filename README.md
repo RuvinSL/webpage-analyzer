@@ -1,7 +1,7 @@
 ## Project overview, prerequisites, technology used
 
 ### overview
-I follow microservices-based application approach to built the app in Golang that analyzes web pages and provides detailed information about their structure and content. The application follows SOLID design principles and focus on architectural complexity
+I follow the microservices-based application approach to built the app in Golang that analyzes web pages and provides detailed information about their structure and content. The application follows SOLID design principles and focus on architectural complexity
 
 ### Prerequisites
     Go 1.24.5 
@@ -26,7 +26,8 @@ DevOps & Infrastructure:
 
     Monitoring: Prometheus
     Logging: Structured logging with slog
-    the app development approach supporting for the followings as well
+
+    The app development approach supporting the followings as well
     Container Registry: Docker Hub (no files included)
     CI/CD: GitHub Actions (no files included)
     Cloud Platform: AWS EC2 (no files included)
@@ -44,6 +45,7 @@ Core dependencies
 
 ### Setup instructions for installation to run the project
 Local Development
+
 Clone and setup:
 ```
 git clone https://github.com/RuvinSL/webpage-analyzer.git
@@ -111,7 +113,7 @@ Metrics: http://localhost:8080/metrics
 
 Health: http://localhost:8080/health
 
-additional services with ports to check API health 
+Additional Services:
 
 Analyzer: http://localhost:8081/health
 
@@ -121,24 +123,24 @@ Prometheus: http://localhost:9090/targets
 
 
 ### The usage of the App with main functionalities and their role in the Application
-Web Page Analysis is the main functionality of the app:
+#### Web Page Analysis is the main functionality of the app:
     Enter a URL in the web form
     Click "Analyze" to process
     View comprehensive results including HTML version, title, headings, and links
 
-Authentication & Security
+#### Authentication & Security
     CORS middleware for API security
     Input validation for URLs
 
-Logging
+#### Logging
     Structured JSON logging with slog
     Log levels: DEBUG, INFO, WARN, ERROR
 
-Error Handling
+#### Error Handling
     Error responses with HTTP status codes
     Detailed error messages for debugging
 
-Performance Monitoring
+#### Performance Monitoring
     Concurrent link checking and worker pool (in docker-compose file link-checker service has the configuration for pool size: WORKER_POOL_SIZE )
     Prometheus metrics for reference
 
@@ -157,12 +159,12 @@ Challenge: Testing distributed components in isolation
 
 Solution: Interface based design with mock implementations for unit tests
 
-#### live reload the App
+#### Live Reload the App
 Challenge: live reload the app when changes are made to code
 
 Solution: install and setup .air.toml inside each service folder. then use "air" to run the app
 
-#### Identify testing coverage
+#### Identify Resting Coverage
 Challenge: Identify testing coverage of the app
 
 Solution: run test using Coverage commands and go race detection
