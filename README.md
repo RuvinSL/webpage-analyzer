@@ -55,7 +55,7 @@ Run with Docker Compose:
 ```
 docker-compose up --build 
 ```
-Note: you can see the logs inside: <root>/logs
+Note: you can see the logs inside root folder: /logs
 
 #### Option 2:
 Run services individually:
