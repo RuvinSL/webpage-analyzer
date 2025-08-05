@@ -18,7 +18,6 @@ import (
 	"github.com/RuvinSL/webpage-analyzer/services/link-checker/core"
 	"github.com/RuvinSL/webpage-analyzer/services/link-checker/handlers"
 	"github.com/gorilla/mux"
-
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
