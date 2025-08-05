@@ -112,6 +112,7 @@ Metrics: http://localhost:8080/metrics
 Health: http://localhost:8080/health
 
 additional services with ports to check API health 
+
 Analyzer: http://localhost:8081/health
 
 Link-checker: http://localhost:8082/health
