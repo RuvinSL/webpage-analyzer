@@ -37,3 +37,6 @@ go test -race ./...
 go test -coverprofile coverage.out ./...
 go tool cover "-html=coverage.out" > coverage.html
 ```
+
+### Screenshots
+Please see the "screenshots" folder for unit testing results

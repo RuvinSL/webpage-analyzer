@@ -202,3 +202,6 @@ SEO analysis capabilities
 done unit testing and integration testing
 
 Please see the [TESTING.md](https://github.com/RuvinSL/webpage-analyzer/blob/main/TESTING.md) for more details
+
+### Screenshots
+Please see the "screenshots" folder for screenshots that had been taken during the development
