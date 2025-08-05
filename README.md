@@ -4,10 +4,10 @@
 I follow microservices-based application approach to built the app in Golang that analyzes web pages and provides detailed information about their structure and content. The application follows SOLID design principles and focus on architectural complexity
 
 ### Prerequisites
-Go 1.24.5 
-Docker 26.0+
-Docker Compose 2.20+
-Air 1.62.0 (optional - only for Live reload when development: https://github.com/air-verse/air/releases)
+    Go 1.24.5 
+    Docker 26.0+
+    Docker Compose 2.20+
+    Air 1.62.0 (optional - only for Live reload when development: https://github.com/air-verse/air/releases)
 
 ### Technology used
 Back-end Services:
