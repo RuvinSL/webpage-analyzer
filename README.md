@@ -11,16 +11,19 @@ I follow microservices-based application approach to built the app in Golang tha
 
 ### Technology used
 Back-end Services:
+
     API Gateway: http://localhost:8080 - Main entry point for web UI and API routing
     Analyzer Service: http://localhost:8081 - Core analysis logic
     Link Checker Service: http://localhost:8082 - Concurrent link validation
     Metrics Service: http://localhost:9090 - Prometheus metrics endpoint
 
 Front-end:
+
     Web UI: http://localhost:8080 - Simple HTML and CSS interface
     Pure JavaScript for form handling for back-end-focused approach
 
 DevOps & Infrastructure:
+
     Monitoring: Prometheus
     Logging: Structured logging with slog
     the app development approach supporting for the followings as well
@@ -31,6 +34,7 @@ DevOps & Infrastructure:
 
 ### Any external dependencies, how to install them if there are any
 Core dependencies
+
     github.com/gorilla/mux v1.8.1          # HTTP routing
     github.com/prometheus/client_golang v1.18.0  # Metrics
     golang.org/x/net v0.19.0               # HTML parsing
