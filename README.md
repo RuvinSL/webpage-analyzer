@@ -164,7 +164,7 @@ Challenge: live reload the app when changes are made to code
 
 Solution: install and setup .air.toml inside each service folder. then use "air" to run the app
 
-#### Identify Resting Coverage
+#### Identify Testing Coverage
 Challenge: Identify testing coverage of the app
 
 Solution: run test using Coverage commands and go race detection
